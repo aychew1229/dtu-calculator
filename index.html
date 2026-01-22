@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Grade Calculator & Transcript Generator</title>
+    <title>University GPA Calculator & Transcript Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
@@ -140,12 +140,12 @@
 
 <div class="container no-print">
     <header>
-        <h2>University Grade Calculator</h2>
+        <h2>University GPA Calculator</h2>
         <p>Calculate GPA & Generate Official Transcript</p>
     </header>
 
     <div class="student-info">
-        <input type="text" id="uniNameInput" placeholder="Enter University Name" class="full-width" oninput="validateString(this)">
+        <input type="text" id="uniNameInput" placeholder="Enter University Name (e.g Debre Tabor university) " class="full-width" oninput="validateString(this)">
         <input type="text" id="studentName" placeholder="Full Student Name" oninput="validateString(this)">
         <input type="text" id="studentID" placeholder="Student ID Number">
         <input type="text" id="department" placeholder="Major / Department" oninput="validateString(this)">
@@ -269,9 +269,10 @@
         const uniInput = document.getElementById('uniNameInput');
         const nameInput = document.getElementById('studentName');
         const deptInput = document.getElementById('department');
+        const stuidInput = document.getElementById('studentID');
         
-        if (!uniInput.value || !nameInput.value || !deptInput.value) {
-            alert("Please fill in University Name, Student Name, and Major.");
+        if (!uniInput.value || !nameInput.value || !deptInput.value || !stuidInput.value   ) {
+            alert("Please fill in University Name, Student Name, Major and Student-ID.");
             return;
         }
 
