@@ -82,7 +82,7 @@
             display: none;
             margin-top: 30px;
             border: 2px solid #333;
-            padding: 20px;
+            padding: 25px;
             background: #fff;
             position: relative;
         }
@@ -91,6 +91,14 @@
             text-align: center;
             border-bottom: 1px dashed #333;
             margin-bottom: 15px;
+            padding-bottom: 10px;
+        }
+
+        /* Fixed compact text for the report title */
+        .transcript-header h4 {
+            margin: 5px 0;
+            white-space: nowrap; 
+            letter-spacing: 0.5px;
         }
 
         .result-grid {
@@ -109,15 +117,17 @@
         .summary-box div {
             display: flex;
             justify-content: space-between;
-            padding: 5px 10px;
+            padding: 8px 10px;
             border-bottom: 1px solid #eee;
         }
 
+        /* Fixed compact text for developer credit */
         .developer-credit {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             text-align: center;
-            margin-top: 20px;
-            color: #999;
+            margin-top: 25px;
+            color: #777;
+            white-space: nowrap;
         }
 
         @media print {
@@ -135,10 +145,10 @@
     </header>
 
     <div class="student-info">
-        <input type="text" id="uniNameInput" placeholder="Enter University Name (e.g., Debre Tabor University)" class="full-width">
-        <input type="text" id="studentName" placeholder="Full Student Name">
+        <input type="text" id="uniNameInput" placeholder="Enter University Name" class="full-width" oninput="validateString(this)">
+        <input type="text" id="studentName" placeholder="Full Student Name" oninput="validateString(this)">
         <input type="text" id="studentID" placeholder="Student ID Number">
-        <input type="text" id="department" placeholder="Major / Department">
+        <input type="text" id="department" placeholder="Major / Department" oninput="validateString(this)">
         <select id="semester">
             <option value="I">Semester I</option>
             <option value="II">Semester II</option>
@@ -156,8 +166,8 @@
         </thead>
         <tbody id="courseBody">
             <tr>
-                <td><input type="text" placeholder="e.g. Maths" class="c-name"></td>
-                <td><input type="number" placeholder=" Cr.hour" class="c-credit"></td>
+                <td><input type="text" placeholder="e.g. Maths" class="c-name" oninput="validateString(this)"></td>
+                <td><input type="number" placeholder="Cr.hour" class="c-credit" step="1" oninput="validateInteger(this)"></td>
                 <td>
                     <select class="c-grade">
                         <option value="4.0">A+ / A (4.0)</option>
@@ -181,9 +191,9 @@
     <button class="btn btn-calc" onclick="calculateGPA()">Calculate & Generate Transcript</button>
 </div>
 
-<div id="result-card" class="container">
+<div id="result-card">
     <div class="transcript-header">
-        <h3 id="resUniName" style="text-transform: uppercase;">UNIVERSITY NAME</h3>
+        <h3 id="resUniName" style="text-transform: uppercase; margin: 0;">UNIVERSITY NAME</h3>
         <h4>Official Semester Grade Report</h4>
     </div>
     
@@ -215,24 +225,27 @@
 
     <div class="developer-credit">Developed by ECE Student @ DTU</div>
 
-    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 20px; background: #c5a059;" onclick="downloadTranscript()">Download as PNG</button>
+    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 25px; background: #c5a059;" onclick="downloadTranscript()">Download as PNG</button>
 </div>
 
 <script>
-    // Security: Disable Right-click and DevTools
+    function validateString(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+    }
+
+    function validateInteger(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    // Security: Disable Right-click
     document.addEventListener('contextmenu', event => event.preventDefault());
-    document.onkeydown = function(e) {
-        if (e.keyCode == 123) return false;
-        if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false;
-        if (e.ctrlKey && e.keyCode == 85) return false;
-    };
 
     function addRow() {
         const tbody = document.getElementById('courseBody');
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><input type="text" class="c-name"></td>
-            <td><input type="number" class="c-credit"></td>
+            <td><input type="text" class="c-name" oninput="validateString(this)"></td>
+            <td><input type="number" class="c-credit" step="1" oninput="validateInteger(this)"></td>
             <td>
                 <select class="c-grade">
                     <option value="4.0">A+ / A</option>
@@ -253,6 +266,15 @@
     }
 
     function calculateGPA() {
+        const uniInput = document.getElementById('uniNameInput');
+        const nameInput = document.getElementById('studentName');
+        const deptInput = document.getElementById('department');
+        
+        if (!uniInput.value || !nameInput.value || !deptInput.value) {
+            alert("Please fill in University Name, Student Name, and Major.");
+            return;
+        }
+
         const names = document.querySelectorAll('.c-name');
         const credits = document.querySelectorAll('.c-credit');
         const grades = document.querySelectorAll('.c-grade');
@@ -262,7 +284,7 @@
         let resHtml = "";
 
         for(let i=0; i < names.length; i++) {
-            let cr = parseFloat(credits[i].value) || 0;
+            let cr = parseInt(credits[i].value) || 0;
             let gVal = parseFloat(grades[i].value);
             let courseGP = cr * gVal;
 
@@ -279,10 +301,10 @@
 
         const gpa = totalCr > 0 ? (totalGP / totalCr).toFixed(2) : 0;
 
-        document.getElementById('resUniName').innerText = document.getElementById('uniNameInput').value || "University Name";
-        document.getElementById('resName').innerText = document.getElementById('studentName').value || "N/A";
+        document.getElementById('resUniName').innerText = uniInput.value;
+        document.getElementById('resName').innerText = nameInput.value;
         document.getElementById('resID').innerText = document.getElementById('studentID').value || "N/A";
-        document.getElementById('resDept').innerText = document.getElementById('department').value || "N/A";
+        document.getElementById('resDept').innerText = deptInput.value;
         document.getElementById('resSem').innerText = document.getElementById('semester').value;
         
         document.getElementById('resBody').innerHTML = resHtml;
@@ -302,8 +324,9 @@
         downloadBtn.style.visibility = 'hidden';
 
         html2canvas(resultCard, {
-            scale: 2,
-            backgroundColor: "#ffffff"
+            scale: 3, // Increased scale for even sharper text
+            backgroundColor: "#ffffff",
+            useCORS: true
         }).then(canvas => {
             const link = document.createElement('a');
             link.download = `Transcript_${studentName}.png`;
