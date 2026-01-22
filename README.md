@@ -15,8 +15,7 @@ This is a professional tool for university students to calculate their GPA and a
 2. Add your courses and credit hours.
 3. Click Calculate and then Download as PNG.
 
-
-#Ethiopian University GPA system 
-#Transcript Generator
-#Grade Calculator
-#university grade format
+@Ethiopian University GPA system 
+@Transcript Generator
+@Grade Calculator
+@university grade format
