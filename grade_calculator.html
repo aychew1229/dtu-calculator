@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Grade Calculator & Transcript Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1a4a7a;
+            --accent-gold: #c5a059;
+            --bg-gray: #f4f7f6;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-gray);
+            margin: 0;
+            padding: 10px;
+            color: #333;
+        }
+  
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--primary-blue);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        h2 { color: var(--primary-blue); margin: 0; text-transform: uppercase; }
+        
+        .student-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .full-width { grid-column: span 2; }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th { background: var(--primary-blue); color: white; padding: 12px; }
+        td { padding: 10px; border-bottom: 1px solid #eee; }
+
+        .btn {
+            cursor: pointer;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .btn-add { background: #2ecc71; color: white; margin-bottom: 10px; }
+        .btn-calc { background: var(--primary-blue); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-remove { background: #e74c3c; color: white; }
+
+        #result-card {
+            display: none;
+            margin-top: 30px;
+            border: 2px solid #333;
+            padding: 20px;
+            background: #fff;
+            position: relative;
+        }
+
+        .transcript-header {
+            text-align: center;
+            border-bottom: 1px dashed #333;
+            margin-bottom: 15px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .summary-box {
+            border: 1px solid #333;
+            margin-top: 15px;
+        }
+
+        .summary-box div {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .developer-credit {
+            font-size: 0.7rem;
+            text-align: center;
+            margin-top: 20px;
+            color: #999;
+        }
+
+        @media print {
+            .no-print { display: none; }
+            .container { box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container no-print">
+    <header>
+        <h2>University Grade Calculator</h2>
+        <p>Calculate GPA & Generate Official Transcript</p>
+    </header>
+
+    <div class="student-info">
+        <input type="text" id="uniNameInput" placeholder="Enter University Name (e.g., Debre Tabor University)" class="full-width">
+        <input type="text" id="studentName" placeholder="Full Student Name">
+        <input type="text" id="studentID" placeholder="Student ID Number">
+        <input type="text" id="department" placeholder="Major / Department">
+        <select id="semester">
+            <option value="I">Semester I</option>
+            <option value="II">Semester II</option>
+        </select>
+    </div>
+
+    <table id="courseTable">
+        <thead>
+            <tr>
+                <th>Course Title</th>
+                <th>Credit Hours</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody id="courseBody">
+            <tr>
+                <td><input type="text" placeholder="e.g. Maths" class="c-name"></td>
+                <td><input type="number" placeholder=" Cr.hour" class="c-credit"></td>
+                <td>
+                    <select class="c-grade">
+                        <option value="4.0">A+ / A (4.0)</option>
+                        <option value="3.75">A- (3.75)</option>
+                        <option value="3.5">B+ (3.5)</option>
+                        <option value="3.0">B (3.0)</option>
+                        <option value="2.75">B- (2.75)</option>
+                        <option value="2.5">C+ (2.5)</option>
+                        <option value="2.0">C (2.0)</option>
+                        <option value="1.75">C- (1.75)</option>
+                        <option value="1.0">D (1.0)</option>
+                        <option value="0">F (0)</option>
+                    </select>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="btn btn-add" onclick="addRow()">+ Add Course</button>
+    <button class="btn btn-calc" onclick="calculateGPA()">Calculate & Generate Transcript</button>
+</div>
+
+<div id="result-card" class="container">
+    <div class="transcript-header">
+        <h3 id="resUniName" style="text-transform: uppercase;">UNIVERSITY NAME</h3>
+        <h4>Official Semester Grade Report</h4>
+    </div>
+    
+    <div class="result-grid">
+        <div><strong>Name:</strong> <span id="resName"></span></div>
+        <div><strong>ID:</strong> <span id="resID"></span></div>
+        <div><strong>Major:</strong> <span id="resDept"></span></div>
+        <div><strong>Semester:</strong> <span id="resSem"></span></div>
+    </div>
+
+    <table id="resTable" style="font-size: 0.85rem;">
+        <thead>
+            <tr>
+                <th>Course</th>
+                <th>Credit</th>
+                <th>Grade Point</th>
+            </tr>
+        </thead>
+        <tbody id="resBody"></tbody>
+    </table>
+
+    <div class="summary-box">
+        <div><span>Total Credit Hours:</span> <span id="totalCr">0</span></div>
+        <div><span>Total Grade Points (GP):</span> <span id="totalGP">0</span></div>
+        <div style="background: #f0f0f0; font-weight: bold;">
+            <span>Semester GPA (ANG):</span> <span id="finalGPA">0.00</span>
+        </div>
+    </div>
+
+    <div class="developer-credit">Developed by ECE Student @ DTU</div>
+
+    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 20px; background: #c5a059;" onclick="downloadTranscript()">Download as PNG</button>
+</div>
+
+<script>
+    // Security: Disable Right-click and DevTools
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    document.onkeydown = function(e) {
+        if (e.keyCode == 123) return false;
+        if (e.ctrlKey && e.shiftKey && e.keyCode == 73) return false;
+        if (e.ctrlKey && e.keyCode == 85) return false;
+    };
+
+    function addRow() {
+        const tbody = document.getElementById('courseBody');
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><input type="text" class="c-name"></td>
+            <td><input type="number" class="c-credit"></td>
+            <td>
+                <select class="c-grade">
+                    <option value="4.0">A+ / A</option>
+                    <option value="3.75">A-</option>
+                    <option value="3.5">B+</option>
+                    <option value="3.0">B</option>
+                    <option value="2.75">B-</option>
+                    <option value="2.5">C+</option>
+                    <option value="2.0">C</option>
+                    <option value="1.75">C-</option>
+                    <option value="1.0">D</option>
+                    <option value="0">F</option>
+                </select>
+            </td>
+            <td><button class="btn btn-remove" onclick="this.parentElement.parentElement.remove()">X</button></td>
+        `;
+        tbody.appendChild(row);
+    }
+
+    function calculateGPA() {
+        const names = document.querySelectorAll('.c-name');
+        const credits = document.querySelectorAll('.c-credit');
+        const grades = document.querySelectorAll('.c-grade');
+        
+        let totalCr = 0;
+        let totalGP = 0;
+        let resHtml = "";
+
+        for(let i=0; i < names.length; i++) {
+            let cr = parseFloat(credits[i].value) || 0;
+            let gVal = parseFloat(grades[i].value);
+            let courseGP = cr * gVal;
+
+            if(cr > 0) {
+                totalCr += cr;
+                totalGP += courseGP;
+                resHtml += `<tr>
+                    <td>${names[i].value || 'Course ' + (i+1)}</td>
+                    <td>${cr}</td>
+                    <td>${courseGP.toFixed(2)}</td>
+                </tr>`;
+            }
+        }
+
+        const gpa = totalCr > 0 ? (totalGP / totalCr).toFixed(2) : 0;
+
+        document.getElementById('resUniName').innerText = document.getElementById('uniNameInput').value || "University Name";
+        document.getElementById('resName').innerText = document.getElementById('studentName').value || "N/A";
+        document.getElementById('resID').innerText = document.getElementById('studentID').value || "N/A";
+        document.getElementById('resDept').innerText = document.getElementById('department').value || "N/A";
+        document.getElementById('resSem').innerText = document.getElementById('semester').value;
+        
+        document.getElementById('resBody').innerHTML = resHtml;
+        document.getElementById('totalCr').innerText = totalCr;
+        document.getElementById('totalGP').innerText = totalGP.toFixed(2);
+        document.getElementById('finalGPA').innerText = gpa;
+
+        document.getElementById('result-card').style.display = 'block';
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    function downloadTranscript() {
+        const resultCard = document.getElementById('result-card');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const studentName = document.getElementById('studentName').value || "Student";
+        
+        downloadBtn.style.visibility = 'hidden';
+
+        html2canvas(resultCard, {
+            scale: 2,
+            backgroundColor: "#ffffff"
+        }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `Transcript_${studentName}.png`;
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            downloadBtn.style.visibility = 'visible';
+        });
+    }
+</script>
+
+</body>
+</html>
