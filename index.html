@@ -11,6 +11,7 @@
             --accent-gold: #c5a059;
             --bg-gray: #f4f7f6;
             --white: #ffffff;
+            --error-red: #ff4757;
         }
 
         body {
@@ -25,7 +26,7 @@
             max-width: 800px;
             margin: 0 auto;
             background: var(--white);
-            padding: 10px;
+            padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
@@ -50,10 +51,33 @@
 
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 6px;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 5px rgba(26, 74, 122, 0.2);
+        }
+
+        /* Modern Error Styling */
+        .error-border {
+            border: 2px solid var(--error-red) !important;
+            background-color: #fff2f2;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .shake {
+            animation: shake 0.2s ease-in-out 0s 2;
         }
 
         table {
@@ -67,7 +91,7 @@
 
         .btn {
             cursor: pointer;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border: none;
             border-radius: 6px;
             font-weight: bold;
@@ -75,7 +99,11 @@
         }
 
         .btn-add { background: #2ecc71; color: white; margin-bottom: 10px; }
+        .btn-add:hover { background: #27ae60; }
+        
         .btn-calc { background: var(--primary-blue); color: white; width: 100%; font-size: 1.1rem; }
+        .btn-calc:hover { background: #133659; }
+
         .btn-remove { background: #e74c3c; color: white; }
 
         #result-card {
@@ -92,13 +120,6 @@
             border-bottom: 1px dashed #333;
             margin-bottom: 15px;
             padding-bottom: 10px;
-        }
-
-        /* Fixed compact text for the report title */
-        .transcript-header h4 {
-            margin: 5px 0;
-            white-space: nowrap; 
-            letter-spacing: 0.5px;
         }
 
         .result-grid {
@@ -121,13 +142,11 @@
             border-bottom: 1px solid #eee;
         }
 
-        /* Fixed compact text for developer credit */
         .developer-credit {
             font-size: 0.75rem;
             text-align: center;
             margin-top: 25px;
             color: #777;
-            white-space: nowrap;
         }
 
         @media print {
@@ -145,7 +164,7 @@
     </header>
 
     <div class="student-info">
-        <input type="text" id="uniNameInput" placeholder="Enter University Name (e.g Debre Tabor university) " class="full-width" oninput="validateString(this)">
+        <input type="text" id="uniNameInput" placeholder="Enter University Name" class="full-width" oninput="validateString(this)">
         <input type="text" id="studentName" placeholder="Full Student Name" oninput="validateString(this)">
         <input type="text" id="studentID" placeholder="Student ID Number">
         <input type="text" id="department" placeholder="Major / Department" oninput="validateString(this)">
@@ -191,7 +210,7 @@
     <button class="btn btn-calc" onclick="calculateGPA()">Calculate & Generate Transcript</button>
 </div>
 
-<div id="result-card">
+<div id="result-card" class="container">
     <div class="transcript-header">
         <h3 id="resUniName" style="text-transform: uppercase; margin: 0;">UNIVERSITY NAME</h3>
         <h4>Official Semester Grade Report</h4>
@@ -225,19 +244,20 @@
 
     <div class="developer-credit">Developed by ECE Student @ DTU</div>
 
-    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 25px; background: #c5a059;" onclick="downloadTranscript()">Download as PNG</button>
+    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 25px; background: var(--accent-gold);" onclick="downloadTranscript()">Download as PNG</button>
 </div>
 
 <script>
     function validateString(input) {
         input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
+        // Clear error styling when user starts typing
+        if(input.value.trim() !== "") input.classList.remove('error-border');
     }
 
     function validateInteger(input) {
         input.value = input.value.replace(/[^0-9]/g, '');
     }
 
-    // Security: Disable Right-click
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     function addRow() {
@@ -266,16 +286,30 @@
     }
 
     function calculateGPA() {
-        const uniInput = document.getElementById('uniNameInput');
-        const nameInput = document.getElementById('studentName');
-        const deptInput = document.getElementById('department');
-        const stuidInput = document.getElementById('studentID');
-        
-        if (!uniInput.value || !nameInput.value || !deptInput.value || !stuidInput.value   ) {
-            alert("Please fill in University Name, Student Name, Major and Student-ID.");
-            return;
-        }
+        // Modern Validation Logic
+        const inputsToValidate = [
+            document.getElementById('uniNameInput'),
+            document.getElementById('studentName'),
+            document.getElementById('department'),
+            document.getElementById('studentID')
+        ];
 
+        let hasError = false;
+
+        inputsToValidate.forEach(input => {
+            if (!input.value.trim()) {
+                input.classList.add('error-border', 'shake');
+                hasError = true;
+                // Remove shake class after animation so it can re-trigger
+                setTimeout(() => input.classList.remove('shake'), 400);
+            } else {
+                input.classList.remove('error-border');
+            }
+        });
+
+        if (hasError) return;
+
+        // Proceed with calculation if validation passes
         const names = document.querySelectorAll('.c-name');
         const credits = document.querySelectorAll('.c-credit');
         const grades = document.querySelectorAll('.c-grade');
@@ -302,10 +336,10 @@
 
         const gpa = totalCr > 0 ? (totalGP / totalCr).toFixed(2) : 0;
 
-        document.getElementById('resUniName').innerText = uniInput.value;
-        document.getElementById('resName').innerText = nameInput.value;
-        document.getElementById('resID').innerText = document.getElementById('studentID').value || "N/A";
-        document.getElementById('resDept').innerText = deptInput.value;
+        document.getElementById('resUniName').innerText = document.getElementById('uniNameInput').value;
+        document.getElementById('resName').innerText = document.getElementById('studentName').value;
+        document.getElementById('resID').innerText = document.getElementById('studentID').value;
+        document.getElementById('resDept').innerText = document.getElementById('department').value;
         document.getElementById('resSem').innerText = document.getElementById('semester').value;
         
         document.getElementById('resBody').innerHTML = resHtml;
@@ -314,7 +348,7 @@
         document.getElementById('finalGPA').innerText = gpa;
 
         document.getElementById('result-card').style.display = 'block';
-        window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
     function downloadTranscript() {
@@ -325,7 +359,7 @@
         downloadBtn.style.visibility = 'hidden';
 
         html2canvas(resultCard, {
-            scale: 3, // Increased scale for even sharper text
+            scale: 3,
             backgroundColor: "#ffffff",
             useCORS: true
         }).then(canvas => {
