@@ -11,6 +11,7 @@
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet" />
+    <link rel="manifest" href="manifest.json">
     <style>
       *,
       *::before,
@@ -1075,5 +1076,11 @@
         });
       }
     </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('data:text/javascript;base64,c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGZ1bmN0aW9uKGV2ZW50KSB7IH0pOw==');
+  }
+</script>
+
   </body>
 </html>
