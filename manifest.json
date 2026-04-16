@@ -1,0 +1,15 @@
+{
+  "name": "Non-Cafe System",
+  "short_name": "Non-Cafe",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f4f7f6",
+  "theme_color": "#e67e22",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1046/1046788.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
