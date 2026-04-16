@@ -1,377 +1,1079 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta name="google-site-verification" content="F2M0XTexCSYSmyMs-N5Mwmh_zNcWjQBUaf7WCiicmZY" />
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University GPA Calculator & Transcript Generator</title>
+  <head>
+    <meta
+      name="google-site-verification"
+      content="F2M0XTexCSYSmyMs-N5Mwmh_zNcWjQBUaf7WCiicmZY" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GPA Calculator & Transcript Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet" />
     <style>
-        :root {
-            --primary-blue: #1a4a7a;
-            --accent-gold: #c5a059;
-            --bg-gray: #f4f7f6;
-            --white: #ffffff;
-            --error-red: #ff4757;
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --ink: #0d0f14;
+        --ink-2: #3a3d48;
+        --surface: #f7f6f2;
+        --card: #ffffff;
+        --gold: #c8973a;
+        --gold-lt: #e8c06a;
+        --gold-dk: #9b6f1f;
+        --navy: #0f2545;
+        --navy-2: #1a3a6b;
+        --red: #e03e3e;
+        --green: #2dbd6e;
+        --border: #e4e2db;
+        --shadow: rgba(15, 37, 69, 0.12);
+        --radius: 14px;
+        --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: var(--surface);
+        color: var(--ink);
+        min-height: 100vh;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            ellipse 80% 60% at 10% 0%,
+            rgba(200, 151, 58, 0.07) 0%,
+            transparent 60%
+          ),
+          radial-gradient(
+            ellipse 60% 80% at 90% 100%,
+            rgba(15, 37, 69, 0.06) 0%,
+            transparent 60%
+          ),
+          var(--surface);
+      }
+
+      /* ── Hero ─────────────────────────────────────────── */
+      .page-hero {
+        background: var(--navy);
+        padding: 56px 24px 48px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+      .page-hero::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: var(--surface);
+        clip-path: ellipse(55% 100% at 50% 100%);
+      }
+      .page-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          -45deg,
+          transparent,
+          transparent 28px,
+          rgba(255, 255, 255, 0.018) 28px,
+          rgba(255, 255, 255, 0.018) 29px
+        );
+      }
+      .hero-badge {
+        display: inline-block;
+        background: rgba(200, 151, 58, 0.18);
+        border: 1px solid rgba(200, 151, 58, 0.35);
+        color: var(--gold-lt);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        padding: 5px 14px;
+        border-radius: 100px;
+        margin-bottom: 18px;
+      }
+      .hero-title {
+        font-family: "Playfair Display", serif;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+      }
+      .hero-title span {
+        background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .hero-sub {
+        margin-top: 12px;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 0.95rem;
+        font-weight: 300;
+        letter-spacing: 0.02em;
+      }
+
+      /* ── Layout ───────────────────────────────────────── */
+      /* FIX 1: wider max-width and more left/right padding */
+      .main {
+        max-width: 999px;
+        margin: 0 auto;
+        padding: 4px 3px 6px;
+      }
+
+      /* FIX 2: result section has no top gap */
+      #result-card.main {
+        padding-top: 0;
+      }
+
+      .section-label {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold-dk);
+        margin-bottom: 14px;
+      }
+      .section-label::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-dk), transparent);
+        opacity: 0.35;
+      }
+      .section-label::before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, var(--gold-dk), transparent);
+        opacity: 0.35;
+      }
+
+      /* ── Card ─────────────────────────────────────────── */
+      /* FIX 1: generous left/right padding inside cards */
+      .card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 20px var(--shadow);
+        padding: 28px 36px;
+        margin-bottom: 24px;
+      }
+
+      /* ── Student Info ─────────────────────────────────── */
+      .student-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .full-width {
+        grid-column: span 2;
+      }
+      .field-wrap {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .field-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+        opacity: 0.7;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select {
+        width: 100%;
+        padding: 10px 8px;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        background: #fafaf8;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.92rem;
+        color: var(--ink);
+        transition: var(--transition);
+        -webkit-appearance: none;
+        appearance: none;
+      }
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--navy-2);
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.1);
+      }
+      .select-wrap {
+        position: relative;
+      }
+      .select-wrap::after {
+        position: absolute;
+        right: 13px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--ink-2);
+        pointer-events: none;
+        font-size: 0.9rem;
+      }
+
+      .error-border {
+        border-color: var(--red) !important;
+        background: #fff5f5 !important;
+        box-shadow: 0 0 0 3px rgba(224, 62, 62, 0.12) !important;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
         }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-gray);
-            margin: 0;
-            padding: 10px;
-            color: #333;
+        20% {
+          transform: translateX(-7px);
         }
-  
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 10px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        60% {
+          transform: translateX(7px);
         }
-
-        header {
-            text-align: center;
-            border-bottom: 2px solid var(--primary-blue);
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+        80% {
+          transform: translateX(-3px);
         }
+      }
+      .shake {
+        animation: shake 0.35s ease;
+      }
 
-        h2 { color: var(--primary-blue); margin: 0; text-transform: uppercase; }
-        
-        .student-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 5px;
-            margin-bottom: 15px;
+      /* ── Course Table ─────────────────────────────────────
+       FIX 1 & 4: table-layout fixed, explicit col widths,
+       no white-space:nowrap so header never overflows      */
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      /* Input table columns */
+      #courseTable .col-name {
+        width: 45%;
+
+      }
+      #courseTable .col-credit {
+        width: 25%;
+      }
+      #courseTable .col-grade {
+        width: 22%;
+      }
+      #courseTable .col-action {
+        width: 18%;
+      }
+
+      /* Result table columns */
+      #resTable .col-name {
+        width: 40%;
+      }
+      #resTable .col-credit {
+        width: 20%;
+      }
+      #resTable .col-gp {
+        width: 25%;
+      }
+
+      thead th {
+        padding: 8px 10px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.9);
+        background: var(--navy);
+        text-align: left;
+        white-space: normal;
+        overflow: hidden;
+      }
+      thead th:first-child {
+        border-radius: 9px 0 0 9px;
+        padding-left: 5px;
+      }
+      thead th:last-child {
+        border-radius: 0 9px 9px 0;
+      }
+
+      tbody tr {
+        transition: background var(--transition);
+      }
+      tbody tr:hover {
+        background: #faf9f6;
+      }
+      tbody td {
+        padding: 9px 9px;
+        border-bottom: 1px solid #f0ede6;
+        vertical-align: middle;
+        overflow: hidden;
+      }
+      tbody td input,
+      tbody td select {
+        padding: 8px 10px;
+        font-size: 0.88rem;
+        border-radius: 7px;
+      }
+
+      .btn-remove {
+        display: block;
+        width: 100%;
+        background: none;
+        border: 1.5px solid #ebd8d8;
+        color: var(--red);
+        border-radius: 7px;
+        cursor: pointer;
+        padding: 6px 0;
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: var(--transition);
+        text-align: center;
+      }
+      .btn-remove:hover {
+        background: var(--red);
+        color: #fff;
+        border-color: var(--red);
+      }
+
+      /* ── Action Buttons ───────────────────────────────── */
+      .actions-row {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border-radius: 10px;
+        padding: 13px 22px;
+        transition: var(--transition);
+      }
+      .btn-add {
+        background: rgba(45, 189, 110, 0.1);
+        color: #1a9553;
+        border: 1.5px solid rgba(45, 189, 110, 0.3);
+      }
+      .btn-add:hover {
+        background: var(--green);
+        color: #fff;
+        border-color: var(--green);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 14px rgba(45, 189, 110, 0.3);
+      }
+      .btn-calc {
+        flex: 1;
+        justify-content: center;
+        background: linear-gradient(135deg, var(--navy), var(--navy-2));
+        color: #fff;
+        font-size: 1rem;
+        box-shadow: 0 4px 18px rgba(15, 37, 69, 0.25);
+      }
+      .btn-calc:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(15, 37, 69, 0.35);
+      }
+      .btn-download {
+        background: linear-gradient(135deg, var(--gold), var(--gold-dk));
+        color: #fff;
+        width: 100%;
+        justify-content: center;
+        font-size: 1rem;
+        margin-top: 20px;
+        box-shadow: 0 4px 18px rgba(200, 151, 58, 0.3);
+      }
+      .btn-download:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px rgba(200, 151, 58, 0.45);
+      }
+      .btn-download:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      /* ── GPA Hero ─────────────────────────────────────── */
+      .gpa-hero {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: linear-gradient(135deg, var(--navy), var(--navy-2));
+        border-radius: var(--radius);
+        padding: 20px 30px;
+        margin-bottom: 20px; /* FIX 2: tighter */
+        color: #fff;
+      }
+      .gpa-circle {
+        flex-shrink: 0;
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+        border: 3px solid rgba(200, 151, 58, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .gpa-number {
+        font-family: "Playfair Display", serif;
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--gold-lt);
+        line-height: 1;
+      }
+      .gpa-label {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.5);
+        margin-top: 4px;
+      }
+      .gpa-meta {
+        flex: 1;
+      }
+      .gpa-meta h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #fff;
+        margin-bottom: 6px;
+      }
+      .gpa-meta p {
+        font-size: 0.88rem;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .grade-bar-wrap {
+        margin-top: 14px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.12);
+        border-radius: 100px;
+        overflow: hidden;
+      }
+      .grade-bar {
+        height: 100%;
+        border-radius: 100px;
+        background: linear-gradient(90deg, var(--gold-lt), var(--gold));
+        transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* ── Transcript Paper ─────────────────────────────── */
+      #result-card {
+        display: none;
+      }
+
+      .transcript-paper {
+        background: #fff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 2px 20px var(--shadow);
+        padding: 30px;
+        position: relative;
+      }
+      /* top accent bar via a real element injected in onclone for canvas */
+      .transcript-accent-bar {
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--navy),
+          var(--gold),
+          var(--navy)
+        );
+        border-radius: var(--radius) var(--radius) 0 0;
+        margin: -36px -36px 28px -36px; /* bleed to edges of padding */
+      }
+      .transcript-header-section {
+        text-align: center;
+        padding-bottom: 20px;
+        margin-bottom: 15px;
+        border-bottom: 1.5px dashed #ccc;
+      }
+      .transcript-uni-name {
+        font-family: "Playfair Display", serif;
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--navy);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .transcript-subtitle {
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold-dk);
+        margin-top: 5px;
+      }
+      .transcript-meta-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px 24px;
+        font-size: 0.88rem;
+        margin-bottom: 15px;
+        color: var(--ink-2);
+      }
+      .transcript-meta-grid div strong {
+        color: var(--ink);
+        margin-right: 4px;
+      }
+
+      #resTable thead th {
+        background: #f2f0ea;
+        color: var(--ink-2);
+        font-size: 0.7rem;
+      }
+      #resTable thead th:first-child {
+        border-radius: 8px 0 0 8px;
+      }
+      #resTable thead th:last-child {
+        border-radius: 0 8px 8px 0;
+      }
+      #resTable tbody td {
+        color: var(--ink);
+        padding: 10px 14px;
+        word-break: break-word;
+      }
+
+      .summary-box {
+        margin-top: 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .summary-box .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 16px;
+        border-bottom: 1px solid #f0ede6;
+        font-size: 0.9rem;
+      }
+      .summary-box .row:last-child {
+        border-bottom: none;
+      }
+      .summary-box .row.highlight {
+        background: var(--navy);
+        color: #fff;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+      .summary-box .row.highlight span:last-child {
+        font-family: "Playfair Display", serif;
+        font-size: 1.2rem;
+        color: var(--gold-lt);
+      }
+      .dev-credit {
+        text-align: center;
+        font-size: 0.72rem;
+        color: #bbb;
+        margin-top: 24px;
+        letter-spacing: 0.06em;
+      }
+
+      /* ── Animations ───────────────────────────────────── */
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
         }
-
-        .full-width { grid-column: span 2; }
-
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
-            transition: all 0.3s ease;
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
+      .reveal {
+        animation: fadeUp 0.5s ease both;
+      }
+      .reveal-d1 {
+        animation-delay: 0.08s;
+      }
+      .reveal-d2 {
+        animation-delay: 0.16s;
+      }
 
-        input:focus {
-            outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 5px rgba(26, 74, 122, 0.2);
+      /* ── Responsive ───────────────────────────────────── */
+      @media (max-width: 640px) {
+        .student-grid {
+          grid-template-columns: 1fr;
         }
-
-        /* Modern Error Styling */
-        .error-border {
-            border: 2px solid var(--error-red) !important;
-            background-color: #fff2f2;
+        .full-width {
+          grid-column: span 1;
         }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-6px); }
-            75% { transform: translateX(6px); }
+        .gpa-hero {
+          flex-direction: column;
+          text-align: center;
         }
-
-        .shake {
-            animation: shake 0.2s ease-in-out 0s 2;
+        .transcript-meta-grid {
+          grid-template-columns: 1fr;
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
+        .transcript-paper {
+          padding: 24px 18px;
         }
-
-        th { background: var(--primary-blue); color: white; padding: 12px; }
-        td { padding: 10px; border-bottom: 1px solid #eee; }
-
-        .btn {
-            cursor: pointer;
-            padding: 12px 10px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: 0.3s;
+        .transcript-accent-bar {
+          margin: -24px -18px 24px -18px;
         }
-
-        .btn-add { background: #2ecc71; color: white; margin-bottom: 10px; }
-        .btn-add:hover { background: #27ae60; }
-        
-        .btn-calc { background: var(--primary-blue); color: white; width: 100%; font-size: 1.1rem; }
-        .btn-calc:hover { background: #133659; }
-
-        .btn-remove { background: #e74c3c; color: white; }
-
-        #result-card {
-            display: none;
-            margin-top: 20px;
-            border: 2px solid #333;
-            padding: 25px;
-            background: #fff;
-            position: relative;
+        .card {
+          padding: 20px 18px;
         }
-
-        .transcript-header {
-            text-align: center;
-            border-bottom: 1px dashed #333;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
+        .main {
+          padding: 28px 16px 50px;
         }
+      }
 
-        .result-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 12px;
-            font-size: 0.9rem;
+      @media print {
+        .no-print {
+          display: none !important;
         }
-
-        .summary-box {
-            border: 1px solid #333;
-            margin-top: 15px;
+        body::before {
+          display: none;
         }
-
-        .summary-box div {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 10px;
-            border-bottom: 1px solid #eee;
+        .page-hero {
+          display: none;
         }
-
-        .developer-credit {
-            font-size: 0.75rem;
-            text-align: center;
-            margin-top: 25px;
-            color: #777;
+        .transcript-paper {
+          box-shadow: none;
         }
-
-        @media print {
-            .no-print { display: none; }
-            .container { box-shadow: none; border: none; }
-        }
+      }
     </style>
-</head>
-<body>
-
-<div class="container no-print">
-    <header>
-        <h2>University GPA Calculator</h2>
-        <p>Calculate GPA & Generate Official Transcript</p>
-    </header>
-
-    <div class="student-info">
-        <input type="text" id="uniNameInput" placeholder="Enter University Name (e.g Debre Tabor University)" class="full-width" oninput="validateString(this)">
-        <input type="text" id="studentName" placeholder="Full Student Name" oninput="validateString(this)">
-        <input type="text" id="studentID" placeholder="Student ID Number">
-        <input type="text" id="department" placeholder="Major / Department" oninput="validateString(this)">
-        <select id="semester">
-            <option value="I">Semester I</option>
-            <option value="II">Semester II</option>
-        </select>
+  </head>
+  <body>
+    <!-- ── Hero ── -->
+    <div class="page-hero no-print">
+      <div class="hero-badge">Academic Tool</div>
+      <h1 class="hero-title">
+        GPA Calculator &amp;<br /><span>Transcript Generator</span>
+      </h1>
+      <p class="hero-sub">
+        Enter your courses, compute your GPA, and export Like an official grade
+        report.
+      </p>
     </div>
 
-    <table id="courseTable">
-        <thead>
-            <tr>
+    <!-- ── Input ── -->
+    <div class="main no-print">
+      <div class="section-label">01 — Student Information</div>
+      <div class="card reveal">
+        <div class="student-grid">
+          <div class="field-wrap full-width">
+            <label class="field-label">University Name</label>
+            <input
+              type="text"
+              id="uniNameInput"
+              placeholder="e.g. Debre Tabor University"
+              oninput="validateString(this)" />
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Full Name</label>
+            <input
+              type="text"
+              id="studentName"
+              placeholder="Student Full Name"
+              oninput="validateString(this)" />
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Student ID</label>
+            <input
+              type="text"
+              id="studentID"
+              placeholder="e.g. DTU/001/18" />
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Department / Major</label>
+            <input
+              type="text"
+              id="department"
+              placeholder="e.g. Electrical and Computer Engineering"
+              oninput="validateString(this)" />
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Semester</label>
+            <div class="select-wrap">
+              <select id="semester">
+                <option value="I">Semester I</option>
+                <option value="II">Semester II</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label reveal reveal-d1">02 — Course Entries</div>
+      <div class="card reveal reveal-d1">
+        <div class="table-wrap">
+          <table id="courseTable">
+            <colgroup>
+              <col class="col-name" />
+              <col class="col-credit" />
+              <col class="col-grade" />
+              <col class="col-action" />
+            </colgroup>
+            <thead>
+              <tr>
                 <th>Course Title</th>
-                <th>Credit Hours</th>
+                <th>Cr. Hrs</th>
                 <th>Grade</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody id="courseBody">
-            <tr>
-                <td><input type="text" placeholder="e.g. Maths" class="c-name" oninput="validateString(this)"></td>
-                <td><input type="number" placeholder="Cr.hour" class="c-credit" step="1" oninput="validateInteger(this)"></td>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="courseBody">
+              <tr>
                 <td>
+                  <input
+                    type="text"
+                    class="c-name"
+                    placeholder="e.g. Mathematics"
+                    oninput="validateString(this)" />
+                </td>
+                <td>
+                  <input
+                    type="number"
+                    class="c-credit"
+                    placeholder="3"
+                    min="1"
+                    step="1"
+                    oninput="validateInteger(this)" />
+                </td>
+                <td>
+                  <div class="select-wrap">
                     <select class="c-grade">
-                        <option value="4.0">A+ / A (4.0)</option>
-                        <option value="3.75">A- (3.75)</option>
-                        <option value="3.5">B+ (3.5)</option>
-                        <option value="3.0">B (3.0)</option>
-                        <option value="2.75">B- (2.75)</option>
-                        <option value="2.5">C+ (2.5)</option>
-                        <option value="2.0">C (2.0)</option>
-                        <option value="1.75">C- (1.75)</option>
-                        <option value="1.0">D (1.0)</option>
-                        <option value="0">F (0)</option>
+                      <option value="4.0">A+ / A (4.0)</option>
+                      <option value="3.75">A− (3.75)</option>
+                      <option value="3.5">B+ (3.5)</option>
+                      <option value="3.0">B (3.0)</option>
+                      <option value="2.75">B− (2.75)</option>
+                      <option value="2.5">C+ (2.5)</option>
+                      <option value="2.0">C (2.0)</option>
+                      <option value="1.75">C− (1.75)</option>
+                      <option value="1.0">D (1.0)</option>
+                      <option value="0">F (0.0)</option>
                     </select>
+                  </div>
                 </td>
                 <td></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <button class="btn btn-add" onclick="addRow()">+ Add Course</button>
-    <button class="btn btn-calc" onclick="calculateGPA()">Calculate & Generate Transcript</button>
-</div>
-
-<div id="result-card" class="container">
-    <div class="transcript-header">
-        <h3 id="resUniName" style="text-transform: uppercase; margin: 0;">UNIVERSITY NAME</h3>
-        <h4>Official Semester Grade Report</h4>
-    </div>
-    
-    <div class="result-grid">
-        <div><strong>Name :</strong> <span id="resName"></span></div>
-        <div><strong>ID :</strong> <span id="resID"></span></div>
-        <div><strong>Major :</strong> <span id="resDept"></span></div>
-        <div><strong>Semester :</strong> <span id="resSem"></span></div>
-    </div>
-
-    <table id="resTable" style="font-size: 0.85rem;">
-        <thead>
-            <tr>
-                <th>Course Title</th>
-                <th>Credit Hour</th>
-                <th>Grade Points</th>
-            </tr>
-        </thead>
-        <tbody id="resBody"></tbody>
-    </table>
-
-    <div class="summary-box">
-        <div><span>Total Credit Hours:</span> <span id="totalCr">0</span></div>
-        <div><span>Total Grade Points (GP):</span> <span id="totalGP">0</span></div>
-        <div style="background: #f0f0f0; font-weight: bold;">
-            <span>Semester GPA :</span> <span id="finalGPA">0.00</span>
+              </tr>
+            </tbody>
+          </table>
         </div>
+        <div class="actions-row">
+          <button class="btn btn-add" onclick="addRow()">＋ Add Course</button>
+          <button class="btn btn-calc" onclick="calculateGPA()"> Calculate &amp; Generate Transcript
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="developer-credit">Developed by ECE Student @ DTU</div>
+    <!-- ── Results ── -->
+    <div id="result-card" class="main">
+      <div class="gpa-hero reveal">
+        <div class="gpa-circle">
+          <div class="gpa-number" id="heroGPA">0.00</div>
+          <div class="gpa-label">GPA</div>
+        </div>
+        <div class="gpa-meta">
+          <h3 id="heroStatus">—</h3>
+          <p id="heroDesc">Your semester grade report is ready below.</p>
+          <div class="grade-bar-wrap">
+            <div class="grade-bar" id="gradeBar" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
 
-    <button id="downloadBtn" class="btn btn-calc no-print" style="margin-top: 25px; background: var(--accent-gold);" onclick="downloadTranscript()">Download as PNG</button>
-</div>
+      <div class="section-label no-print reveal reveal-d1">
+        Official Transcript
+      </div>
 
-<script>
-    function validateString(input) {
-        input.value = input.value.replace(/[^a-zA-Z\s]/g, '');
-        // Clear error styling when user starts typing
-        if(input.value.trim() !== "") input.classList.remove('error-border');
-    }
+      <!-- FIX 3: id="transcriptPaper" is the capture target -->
+      <div class="transcript-paper reveal reveal-d1" id="transcriptPaper">
+        <!-- accent bar as a real DOM element so html2canvas captures it -->
+        <div class="transcript-accent-bar"></div>
 
-    function validateInteger(input) {
-        input.value = input.value.replace(/[^0-9]/g, '');
-    }
+        <div class="transcript-header-section">
+          <div class="transcript-uni-name" id="resUniName">UNIVERSITY NAME</div>
+          <div class="transcript-subtitle">Official Semester Grade Report</div>
+        </div>
 
-    document.addEventListener('contextmenu', event => event.preventDefault());
+        <div class="transcript-meta-grid">
+          <div><strong>Name:</strong><span id="resName"></span></div>
+          <div><strong>Student ID:</strong><span id="resID"></span></div>
+          <div><strong>Department:</strong><span id="resDept"></span></div>
+          <div><strong>Semester:</strong><span id="resSem"></span></div>
+        </div>
 
-    function addRow() {
-        const tbody = document.getElementById('courseBody');
-        const row = document.createElement('tr');
+        <table id="resTable">
+          <colgroup>
+            <col class="col-name" />
+            <col class="col-credit" />
+            <col class="col-gp" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Course Title</th>
+              <th>Credit Hours</th>
+              <th>Grade Points</th>
+            </tr>
+          </thead>
+          <tbody id="resBody"></tbody>
+        </table>
+
+        <div class="summary-box">
+          <div class="row">
+            <span>Total Credit Hours</span><span id="totalCr">0</span>
+          </div>
+          <div class="row">
+            <span>Total Grade Points</span><span id="totalGP">0.00</span>
+          </div>
+          <div class="row highlight">
+            <span>Semester GPA</span>
+            <span id="finalGPA">0.00</span>
+          </div>
+        </div>
+
+        <div class="dev-credit">Developed by ECE Student @ DTU</div>
+      </div>
+
+      <button
+        id="downloadBtn"
+        class="btn btn-download no-print"
+        onclick="downloadTranscript()">
+        ↓ Download Transcript as PNG
+      </button>
+    </div>
+
+    <script>
+      /* ── Validation ────────────────────────────────── */
+      function validateString(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s]/g, "");
+        if (input.value.trim()) input.classList.remove("error-border");
+      }
+      function validateInteger(input) {
+        input.value = input.value.replace(/[^0-9]/g, "");
+      }
+      document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+      /* ── Add Row ───────────────────────────────────── */
+      function addRow() {
+        const tbody = document.getElementById("courseBody");
+        const row = document.createElement("tr");
         row.innerHTML = `
-            <td><input type="text" class="c-name" oninput="validateString(this)"></td>
-            <td><input type="number" class="c-credit" step="1" oninput="validateInteger(this)"></td>
-            <td>
-                <select class="c-grade">
-                    <option value="4.0">A+ / A</option>
-                    <option value="3.75">A-</option>
-                    <option value="3.5">B+</option>
-                    <option value="3.0">B</option>
-                    <option value="2.75">B-</option>
-                    <option value="2.5">C+</option>
-                    <option value="2.0">C</option>
-                    <option value="1.75">C-</option>
-                    <option value="1.0">D</option>
-                    <option value="0">F</option>
-                </select>
-            </td>
-            <td><button class="btn btn-remove" onclick="this.parentElement.parentElement.remove()">X</button></td>
-        `;
+      <td><input type="text" class="c-name" placeholder="Course name" oninput="validateString(this)" /></td>
+      <td><input type="number" class="c-credit" placeholder="3" min="1" step="1" oninput="validateInteger(this)" /></td>
+      <td>
+        <div class="select-wrap">
+          <select class="c-grade">
+            <option value="4.0">A+ / A (4.0)</option>
+            <option value="3.75">A− (3.75)</option>
+            <option value="3.5">B+ (3.5)</option>
+            <option value="3.0">B (3.0)</option>
+            <option value="2.75">B− (2.75)</option>
+            <option value="2.5">C+ (2.5)</option>
+            <option value="2.0">C (2.0)</option>
+            <option value="1.75">C− (1.75)</option>
+            <option value="1.0">D (1.0)</option>
+            <option value="0">F (0.0)</option>
+          </select>
+        </div>
+      </td>
+      <td><button class="btn-remove" onclick="this.closest('tr').remove()">✕</button></td>
+    `;
         tbody.appendChild(row);
-    }
-
-    function calculateGPA() {
-        // Modern Validation Logic
-        const inputsToValidate = [
-            document.getElementById('uniNameInput'),
-            document.getElementById('studentName'),
-            document.getElementById('department'),
-            document.getElementById('studentID')
-        ];
-
-        let hasError = false;
-
-        inputsToValidate.forEach(input => {
-            if (!input.value.trim()) {
-                input.classList.add('error-border', 'shake');
-                hasError = true;
-                // Remove shake class after animation so it can re-trigger
-                setTimeout(() => input.classList.remove('shake'), 400);
-            } else {
-                input.classList.remove('error-border');
-            }
+        row.style.cssText =
+          "opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease";
+        requestAnimationFrame(() => {
+          row.style.opacity = "1";
+          row.style.transform = "translateY(0)";
         });
+      }
 
+      /* ── GPA Status ────────────────────────────────── */
+      function gpaStatus(gpa) {
+        if (gpa >= 3.75)
+          return ["Excelent", "Outstanding academic achievement."];
+        if (gpa >= 3.0)
+          return ["very good", "Good academic standing."];
+        if (gpa >= 2.5) 
+        return ["Good", "Above average performance."];
+        if (gpa >= 2.0)
+          return ["Satisfactory", "Meeting academic requirements."];
+        if (gpa >= 1.75)
+          return ["Unsatisfactory", "Consider strengthening some areas."];
+        if (gpa >= 1.0)
+          return ["Very Poor", "Academic improvement recommended."];
+        return ["Below Standard", "Fail"];
+      }
+
+      /* ── Calculate ─────────────────────────────────── */
+      function calculateGPA() {
+        const fields = [
+          "uniNameInput",
+          "studentName",
+          "department",
+          "studentID",
+        ];
+        let hasError = false;
+        fields.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el.value.trim()) {
+            el.classList.add("error-border", "shake");
+            hasError = true;
+            setTimeout(() => el.classList.remove("shake"), 400);
+          } else {
+            el.classList.remove("error-border");
+          }
+        });
         if (hasError) return;
 
-        // Proceed with calculation if validation passes
-        const names = document.querySelectorAll('.c-name');
-        const credits = document.querySelectorAll('.c-credit');
-        const grades = document.querySelectorAll('.c-grade');
-        
-        let totalCr = 0;
-        let totalGP = 0;
-        let resHtml = "";
+        const names = document.querySelectorAll(".c-name");
+        const credits = document.querySelectorAll(".c-credit");
+        const grades = document.querySelectorAll(".c-grade");
+        let totalCr = 0,
+          totalGP = 0,
+          resHtml = "";
 
-        for(let i=0; i < names.length; i++) {
-            let cr = parseInt(credits[i].value) || 0;
-            let gVal = parseFloat(grades[i].value);
-            let courseGP = cr * gVal;
-
-            if(cr > 0) {
-                totalCr += cr;
-                totalGP += courseGP;
-                resHtml += `<tr>
-                    <td>${names[i].value || 'Course ' + (i+1)}</td>
-                    <td>${cr}</td>
-                    <td>${courseGP.toFixed(2)}</td>
-                </tr>`;
-            }
+        for (let i = 0; i < names.length; i++) {
+          const cr = parseInt(credits[i].value) || 0;
+          const gVal = parseFloat(grades[i].value);
+          const gp = cr * gVal;
+          if (cr > 0) {
+            totalCr += cr;
+            totalGP += gp;
+            resHtml += `<tr>
+          <td>${names[i].value || "Course " + (i + 1)}</td>
+          <td style="text-align:center">${cr}</td>
+          <td style="text-align:center">${gp.toFixed(2)}</td>
+        </tr>`;
+          }
         }
 
-        const gpa = totalCr > 0 ? (totalGP / totalCr).toFixed(2) : 0;
+        const gpa = totalCr > 0 ? totalGP / totalCr : 0;
+        const gpaFixed = gpa.toFixed(2);
+        const [status, desc] = gpaStatus(gpa);
 
-        document.getElementById('resUniName').innerText = document.getElementById('uniNameInput').value;
-        document.getElementById('resName').innerText = document.getElementById('studentName').value;
-        document.getElementById('resID').innerText = document.getElementById('studentID').value;
-        document.getElementById('resDept').innerText = document.getElementById('department').value;
-        document.getElementById('resSem').innerText = document.getElementById('semester').value;
-        
-        document.getElementById('resBody').innerHTML = resHtml;
-        document.getElementById('totalCr').innerText = totalCr;
-        document.getElementById('totalGP').innerText = totalGP.toFixed(2);
-        document.getElementById('finalGPA').innerText = gpa;
+        document.getElementById("resUniName").textContent =
+          document.getElementById("uniNameInput").value;
+        document.getElementById("resName").textContent =
+          " " + document.getElementById("studentName").value;
+        document.getElementById("resID").textContent =
+          " " + document.getElementById("studentID").value;
+        document.getElementById("resDept").textContent =
+          " " + document.getElementById("department").value;
+        document.getElementById("resSem").textContent =
+          " Semester " + document.getElementById("semester").value;
+        document.getElementById("resBody").innerHTML = resHtml;
+        document.getElementById("totalCr").textContent = totalCr;
+        document.getElementById("totalGP").textContent = totalGP.toFixed(2);
+        document.getElementById("finalGPA").textContent = gpaFixed;
+        document.getElementById("heroGPA").textContent = gpaFixed;
+        document.getElementById("heroStatus").textContent = status;
+        document.getElementById("heroDesc").textContent = desc;
 
-        document.getElementById('result-card').style.display = 'block';
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
+        setTimeout(() => {
+          document.getElementById("gradeBar").style.width =
+            Math.min((gpa / 4) * 100, 100) + "%";
+        }, 200);
 
-    function downloadTranscript() {
-        const resultCard = document.getElementById('result-card');
-        const downloadBtn = document.getElementById('downloadBtn');
-        const studentName = document.getElementById('studentName').value || "Student";
-        
-        downloadBtn.style.visibility = 'hidden';
-
-        html2canvas(resultCard, {
-            scale: 3,
-            backgroundColor: "#ffffff",
-            useCORS: true
-        }).then(canvas => {
-            const link = document.createElement('a');
-            link.download = `Transcript_${studentName}.png`;
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-            downloadBtn.style.visibility = 'visible';
+        const rc = document.getElementById("result-card");
+        rc.style.display = "block";
+        rc.querySelectorAll(".reveal").forEach((el) => {
+          el.style.animation = "none";
+          requestAnimationFrame(() => {
+            el.style.animation = "";
+          });
         });
-    }
-</script>
+        window.scrollTo({ top: rc.offsetTop - 20, behavior: "smooth" });
+      }
 
-</body>
+      /* ── Download ────────────────────────────── */
+      function downloadTranscript() {
+        const paper = document.getElementById("transcriptPaper");
+        const btn = document.getElementById("downloadBtn");
+        const name = document.getElementById("studentName").value || "Student";
+
+        btn.textContent = "Preparing image…";
+        btn.disabled = true;
+
+        // Let the browser fully paint before capturing
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            html2canvas(paper, {
+              scale: 3,
+              backgroundColor: "#ffffff",
+              useCORS: true,
+              allowTaint: true,
+              foreignObjectRendering: false,
+              logging: false,
+              onclone(clonedDoc) {
+                const el = clonedDoc.getElementById("transcriptPaper");
+                if (!el) return;
+                // Remove styles that confuse html2canvas
+                el.style.cssText = [
+                  "position:relative",
+                  "background:#fff",
+                  "padding:36px",
+                  "border:1px solid #e4e2db",
+                  "border-radius:0",
+                  "box-shadow:none",
+                  "animation:none",
+                  "opacity:1",
+                  "transform:none",
+                  "width:" + paper.offsetWidth + "px",
+                ].join(";");
+                // Ensure accent bar renders
+                const bar = el.querySelector(".transcript-accent-bar");
+                if (bar) {
+                  bar.style.cssText =
+                    "height:5px;background:linear-gradient(90deg,#0f2545,#c8973a,#0f2545);margin:-36px -36px 28px -36px;display:block;";
+                }
+              },
+            })
+              .then((canvas) => {
+                const link = document.createElement("a");
+                link.download = `Transcript_${name}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                btn.textContent = "↓ Download Transcript as PNG";
+                btn.disabled = false;
+              })
+              .catch((err) => {
+                console.error(err);
+                btn.textContent = "↓ Download Transcript as PNG";
+                btn.disabled = false;
+              });
+          }, 150);
+        });
+      }
+    </script>
+  </body>
 </html>
