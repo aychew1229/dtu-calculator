@@ -6,7 +6,7 @@
 
 A precision-engineered university grade calculator and digital transcript generator. Developed specifically to meet the academic standards of **Debre Tabor University (DTU)** and other Ethiopian higher education institutions. 
 
-**[Use the Calculator Now 🧮](https://robel1229.github.io/dtu-calculator/)**
+**[Use the Calculator Now 🧮](https://aychew1229.github.io/dtu-calculator/)**
 
 ---
 
