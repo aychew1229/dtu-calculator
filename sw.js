@@ -1,41 +1,51 @@
-const CACHE_NAME = 'gpa-calc-v2'; // Increment this (v3, v4, etc.) to force an update
+const CACHE_NAME = 'gpa-calc-v3'; // Increment this (v4, v5...) to force mobile update
 const ASSETS = [
   './',
-  './index.html',
-  './manifest.json',
-  './icon.png',
-  './html2canvas.min.js',
+  'index.html',
+  'manifest.json',
+  'icon.png',
+  'html2canvas.min.js',
   'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap'
 ];
 
-// Install: Cache all assets and force immediate activation
-self.addEventListener('install', (event) => {
-  self.skipWaiting(); 
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
-});
-
-// Activate: Clean up old versions of the cache
-self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim()); 
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
-      );
+// Install: Cache everything
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(ASSETS);
     })
   );
 });
 
-// Fetch: Network falling back to Cache (Ensures updates if online, works if offline)
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+// Activate: Remove old caches
+self.addEventListener('activate', (e) => {
+  e.waitUntil(clients.claim());
+  e.waitUntil(
+    caches.keys().then(keys => {
+      return Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)));
+    })
   );
 });
 
-// Listen for the "SKIP_WAITING" message from the HTML
+// Fetch: Network-First Strategy
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    fetch(e.request)
+      .then(networkResponse => {
+        // Update cache with fresh version from network
+        return caches.open(CACHE_NAME).then(cache => {
+          if (e.request.method === 'GET') {
+            cache.put(e.request, networkResponse.clone());
+          }
+          return networkResponse;
+        });
+      })
+      .catch(() => caches.match(e.request)) // Offline fallback
+  );
+});
+
+// Listener for manual skip waiting
 self.addEventListener('message', (event) => {
   if (event.data && event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
