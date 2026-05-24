@@ -1,9 +1,9 @@
-const CACHE_NAME = 'gpa-calc-v3'; // Increment this (v4, v5...) to force mobile update
+const CACHE_NAME = 'gpa-calc-v3.1'; // Increment this (v4, v5...) to force mobile update
 const ASSETS = [
   './',
   'index.html',
   'manifest.json',
-  'icon.png',
+  'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
   'html2canvas.min.js',
   'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap'
 ];
