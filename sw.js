@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gpa-calc-v3.1'; // Increment this (v4, v5...) to force mobile update
+const CACHE_NAME = 'gpa-calc-v3.2';
 const ASSETS = [
   './',
   'index.html',
