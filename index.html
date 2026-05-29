@@ -7,6 +7,7 @@
     <title>GPA Calculator</title>
     <link rel="icon" type="image/png" href="icon.png">
     <script src="html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
       rel="stylesheet" />
@@ -38,9 +39,7 @@
         --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      html {
-        scroll-behavior: smooth;
-      }
+      html { scroll-behavior: smooth; }
 
       body {
         font-family: "DM Sans", sans-serif;
@@ -55,20 +54,12 @@
         inset: 0;
         z-index: -1;
         background:
-          radial-gradient(
-            ellipse 80% 60% at 10% 0%,
-            rgba(200, 151, 58, 0.07) 0%,
-            transparent 60%
-          ),
-          radial-gradient(
-            ellipse 60% 80% at 90% 100%,
-            rgba(15, 37, 69, 0.06) 0%,
-            transparent 60%
-          ),
+          radial-gradient(ellipse 80% 60% at 10% 0%, rgba(200,151,58,0.07) 0%, transparent 60%),
+          radial-gradient(ellipse 60% 80% at 90% 100%, rgba(15,37,69,0.06) 0%, transparent 60%),
           var(--surface);
       }
 
-      /* ── Hero ─────────────────────────────────────────── */
+      /* ── Hero ── */
       .page-hero {
         background: var(--navy);
         padding: 56px 24px 48px;
@@ -79,9 +70,7 @@
       .page-hero::after {
         content: "";
         position: absolute;
-        bottom: -2px;
-        left: 0;
-        right: 0;
+        bottom: -2px; left: 0; right: 0;
         height: 40px;
         background: var(--surface);
         clip-path: ellipse(55% 100% at 50% 100%);
@@ -90,18 +79,12 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: repeating-linear-gradient(
-          -45deg,
-          transparent,
-          transparent 28px,
-          rgba(255, 255, 255, 0.018) 28px,
-          rgba(255, 255, 255, 0.018) 29px
-        );
+        background: repeating-linear-gradient(-45deg, transparent, transparent 28px, rgba(255,255,255,0.018) 28px, rgba(255,255,255,0.018) 29px);
       }
       .hero-badge {
         display: inline-block;
-        background: rgba(200, 151, 58, 0.18);
-        border: 1px solid rgba(200, 151, 58, 0.35);
+        background: rgba(200,151,58,0.18);
+        border: 1px solid rgba(200,151,58,0.35);
         color: var(--gold-lt);
         font-size: 0.72rem;
         font-weight: 600;
@@ -127,24 +110,19 @@
       }
       .hero-sub {
         margin-top: 8px;
-        color: rgba(255, 255, 255, 0.55);
+        color: rgba(255,255,255,0.55);
         font-size: 0.95rem;
         font-weight: 300;
         letter-spacing: 0.02em;
       }
 
-      /* ── Layout ───────────────────────────────────────── */
-      /* FIX 1: wider max-width and more left/right padding */
+      /* ── Layout ── */
       .main {
         max-width: 999px;
         margin: 0 auto;
         padding: 4px 3px 6px;
       }
-
-      /* FIX 2: result section has no top gap */
-      #result-card.main {
-        padding-top: 0;
-      }
+      #result-card.main { padding-top: 0; }
 
       .section-label {
         display: flex;
@@ -158,22 +136,17 @@
         margin-bottom: 14px;
       }
       .section-label::after {
-        content: "";
-        flex: 1;
-        height: 1px;
+        content: ""; flex: 1; height: 1px;
         background: linear-gradient(90deg, var(--gold-dk), transparent);
         opacity: 0.35;
       }
       .section-label::before {
-        content: "";
-        flex: 1;
-        height: 1px;
+        content: ""; flex: 1; height: 1px;
         background: linear-gradient(90deg, var(--gold-dk), transparent);
         opacity: 0.35;
       }
 
-      /* ── Card ─────────────────────────────────────────── */
-      /* FIX 1: generous left/right padding inside cards */
+      /* ── Card ── */
       .card {
         background: var(--card);
         border-radius: var(--radius);
@@ -183,20 +156,14 @@
         margin-bottom: 24px;
       }
 
-      /* ── Student Info ─────────────────────────────────── */
+      /* ── Student Info ── */
       .student-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 12px;
       }
-      .full-width {
-        grid-column: span 2;
-      }
-      .field-wrap {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-      }
+      .full-width { grid-column: span 2; }
+      .field-wrap { display: flex; flex-direction: column; gap: 5px; }
       .field-label {
         font-size: 0.72rem;
         font-weight: 600;
@@ -221,20 +188,15 @@
         -webkit-appearance: none;
         appearance: none;
       }
-      input:focus,
-      select:focus {
+      input:focus, select:focus {
         outline: none;
         border-color: var(--navy-2);
         background: #fff;
-        box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.1);
+        box-shadow: 0 0 0 3px rgba(26,58,107,0.1);
       }
-      .select-wrap {
-        position: relative;
-      }
+      .select-wrap { position: relative; }
       .select-wrap::after {
-        position: absolute;
-        right: 13px;
-        top: 50%;
+        position: absolute; right: 13px; top: 50%;
         transform: translateY(-50%);
         color: var(--ink-2);
         pointer-events: none;
@@ -244,65 +206,90 @@
       .error-border {
         border-color: var(--red) !important;
         background: #fff5f5 !important;
-        box-shadow: 0 0 0 3px rgba(224, 62, 62, 0.12) !important;
+        box-shadow: 0 0 0 3px rgba(224,62,62,0.12) !important;
       }
       @keyframes shake {
-        0%,
-        100% {
-          transform: translateX(0);
-        }
-        20% {
-          transform: translateX(-7px);
-        }
-        60% {
-          transform: translateX(7px);
-        }
-        80% {
-          transform: translateX(-3px);
-        }
+        0%, 100% { transform: translateX(0); }
+        20% { transform: translateX(-7px); }
+        60% { transform: translateX(7px); }
+        80% { transform: translateX(-3px); }
       }
-      .shake {
-        animation: shake 0.35s ease;
-      }
+      .shake { animation: shake 0.35s ease; }
 
-      /* ── Course Table ─────────────────────────────────────
-       FIX 1 & 4: table-layout fixed, explicit col widths,
-       no white-space:nowrap so header never overflows      */
-      .table-wrap {
-        overflow-x: auto;
-      }
-
-      table {
+      /* ── Previous Semester Card ── */
+      .prev-toggle-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
         width: 100%;
-        border-collapse: collapse;
-        table-layout: fixed;
+        background: none;
+        border: 1.5px dashed rgba(200,151,58,0.45);
+        border-radius: var(--radius);
+        padding: 14px 20px;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--gold-dk);
+        transition: var(--transition);
+        margin-bottom: 24px;
+        letter-spacing: 0.02em;
+      }
+      .prev-toggle-btn:hover {
+        background: rgba(200,151,58,0.06);
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .prev-toggle-btn .toggle-icon {
+        width: 26px; height: 26px;
+        border-radius: 50%;
+        background: rgba(200,151,58,0.12);
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem;
+        flex-shrink: 0;
+        transition: var(--transition);
+      }
+      .prev-toggle-btn.open .toggle-icon { background: var(--gold); color: #fff; }
+      .prev-toggle-btn .toggle-label { flex: 1; text-align: left; }
+      .prev-toggle-btn .toggle-arrow {
+        font-size: 0.75rem;
+        transition: transform var(--transition);
+        opacity: 0.6;
+      }
+      .prev-toggle-btn.open .toggle-arrow { transform: rotate(180deg); }
+
+      .prev-section {
+        display: none;
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 20px var(--shadow);
+        padding: 24px 36px;
+        margin-bottom: 24px;
+        margin-top: -16px;
+        animation: fadeUp 0.35s ease both;
+      }
+      .prev-section.open { display: block; }
+      .prev-section .prev-hint {
+        font-size: 0.8rem;
+        color: var(--ink-2);
+        opacity: 0.65;
+        margin-bottom: 16px;
+        line-height: 1.5;
       }
 
-      /* Input table columns */
-      #courseTable .col-name {
-        width: 45%;
+      /* ── Course Table ── */
+      .table-wrap { overflow-x: auto; }
+      table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
-      }
-      #courseTable .col-credit {
-        width: 25%;
-      }
-      #courseTable .col-grade {
-        width: 22%;
-      }
-      #courseTable .col-action {
-        width: 18%;
-      }
+      #courseTable .col-name  { width: 45%; }
+      #courseTable .col-credit{ width: 25%; }
+      #courseTable .col-grade { width: 22%; }
+      #courseTable .col-action{ width: 18%; }
 
-      /* Result table columns */
-      #resTable .col-name {
-        width: 40%;
-      }
-      #resTable .col-credit {
-        width: 20%;
-      }
-      #resTable .col-gp {
-        width: 25%;
-      }
+      #resTable .col-name  { width: 40%; }
+      #resTable .col-credit{ width: 20%; }
+      #resTable .col-gp    { width: 25%; }
 
       thead th {
         padding: 8px 10px;
@@ -310,42 +297,27 @@
         font-weight: 600;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255,255,255,0.9);
         background: var(--navy);
         text-align: left;
         white-space: normal;
         overflow: hidden;
       }
-      thead th:first-child {
-        border-radius: 9px 0 0 9px;
-        padding-left: 5px;
-      }
-      thead th:last-child {
-        border-radius: 0 9px 9px 0;
-      }
+      thead th:first-child { border-radius: 9px 0 0 9px; padding-left: 5px; }
+      thead th:last-child  { border-radius: 0 9px 9px 0; }
 
-      tbody tr {
-        transition: background var(--transition);
-      }
-      tbody tr:hover {
-        background: #faf9f6;
-      }
+      tbody tr { transition: background var(--transition); }
+      tbody tr:hover { background: #faf9f6; }
       tbody td {
         padding: 9px 9px;
         border-bottom: 1px solid #f0ede6;
         vertical-align: middle;
         overflow: hidden;
       }
-      tbody td input,
-      tbody td select {
-        padding: 8px 10px;
-        font-size: 0.88rem;
-        border-radius: 7px;
-      }
+      tbody td input, tbody td select { padding: 8px 10px; font-size: 0.88rem; border-radius: 7px; }
 
       .btn-remove {
-        display: block;
-        width: 100%;
+        display: block; width: 100%;
         background: none;
         border: 1.5px solid #ebd8d8;
         color: var(--red);
@@ -357,144 +329,90 @@
         transition: var(--transition);
         text-align: center;
       }
-      .btn-remove:hover {
-        background: var(--red);
-        color: #fff;
-        border-color: var(--red);
-      }
+      .btn-remove:hover { background: var(--red); color: #fff; border-color: var(--red); }
 
-      /* ── Action Buttons ───────────────────────────────── */
-      .actions-row {
-        display: flex;
-        gap: 12px;
-        margin-top: 18px;
-        flex-wrap: wrap;
-      }
+      /* ── Action Buttons ── */
+      .actions-row { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
       .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        border: none;
-        cursor: pointer;
+        display: inline-flex; align-items: center; gap: 8px;
+        border: none; cursor: pointer;
         font-family: "DM Sans", sans-serif;
-        font-weight: 600;
-        font-size: 0.9rem;
-        border-radius: 10px;
-        padding: 13px 22px;
+        font-weight: 600; font-size: 0.9rem;
+        border-radius: 10px; padding: 13px 22px;
         transition: var(--transition);
       }
       .btn-add {
-        background: rgba(45, 189, 110, 0.1);
-        color: #1a9553;
-        border: 1.5px solid rgba(45, 189, 110, 0.3);
+        background: rgba(45,189,110,0.1); color: #1a9553;
+        border: 1.5px solid rgba(45,189,110,0.3);
       }
       .btn-add:hover {
-        background: var(--green);
-        color: #fff;
-        border-color: var(--green);
-        transform: translateY(-1px);
-        box-shadow: 0 4px 14px rgba(45, 189, 110, 0.3);
+        background: var(--green); color: #fff; border-color: var(--green);
+        transform: translateY(-1px); box-shadow: 0 4px 14px rgba(45,189,110,0.3);
       }
       .btn-calc {
-        flex: 1;
-        justify-content: center;
+        flex: 1; justify-content: center;
         background: linear-gradient(135deg, var(--navy), var(--navy-2));
-        color: #fff;
-        font-size: 1rem;
-        box-shadow: 0 4px 18px rgba(15, 37, 69, 0.25);
+        color: #fff; font-size: 1rem;
+        box-shadow: 0 4px 18px rgba(15,37,69,0.25);
       }
-      .btn-calc:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(15, 37, 69, 0.35);
-      }
+      .btn-calc:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,37,69,0.35); }
       .btn-download {
         background: linear-gradient(135deg, var(--gold), var(--gold-dk));
-        color: #fff;
-        width: 100%;
-        justify-content: center;
-        font-size: 1rem;
-        margin-top: 20px;
-        box-shadow: 0 4px 18px rgba(200, 151, 58, 0.3);
+        color: #fff; width: 100%; justify-content: center;
+        font-size: 1rem; margin-top: 20px;
+        box-shadow: 0 4px 18px rgba(200,151,58,0.3);
       }
-      .btn-download:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 28px rgba(200, 151, 58, 0.45);
-      }
-      .btn-download:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none;
-      }
+      .btn-download:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(200,151,58,0.45); }
+      .btn-download:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-      /* ── GPA Hero ─────────────────────────────────────── */
+      /* ── GPA Hero ── */
       .gpa-hero {
-        display: flex;
-        align-items: center;
-        gap: 10px;
+        display: flex; align-items: center; gap: 10px;
         background: linear-gradient(135deg, var(--navy), var(--navy-2));
         border-radius: var(--radius);
         padding: 20px 30px;
-        margin-bottom: 20px; /* FIX 2: tighter */
+        margin-bottom: 20px;
         color: #fff;
       }
       .gpa-circle {
-        flex-shrink: 0;
-        width: 110px;
-        height: 110px;
+        flex-shrink: 0; width: 110px; height: 110px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.08);
-        border: 3px solid rgba(200, 151, 58, 0.5);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
+        background: rgba(255,255,255,0.08);
+        border: 3px solid rgba(200,151,58,0.5);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
       }
       .gpa-number {
         font-family: "Playfair Display", serif;
-        font-size: 2.2rem;
-        font-weight: 900;
-        color: var(--gold-lt);
-        line-height: 1;
+        font-size: 2.2rem; font-weight: 900;
+        color: var(--gold-lt); line-height: 1;
       }
       .gpa-label {
-        font-size: 0.68rem;
-        letter-spacing: 0.14em;
+        font-size: 0.68rem; letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.5);
+        color: rgba(255,255,255,0.5);
         margin-top: 4px;
       }
-      .gpa-meta {
-        flex: 1;
-      }
+      .gpa-meta { flex: 1; }
       .gpa-meta h3 {
         font-family: "Playfair Display", serif;
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #fff;
-        margin-bottom: 6px;
+        font-size: 1.4rem; font-weight: 700;
+        color: #fff; margin-bottom: 6px;
       }
-      .gpa-meta p {
-        font-size: 0.88rem;
-        color: rgba(255, 255, 255, 0.6);
-      }
+      .gpa-meta p { font-size: 0.88rem; color: rgba(255,255,255,0.6); }
       .grade-bar-wrap {
-        margin-top: 14px;
-        height: 6px;
-        background: rgba(255, 255, 255, 0.12);
-        border-radius: 100px;
-        overflow: hidden;
+        margin-top: 14px; height: 6px;
+        background: rgba(255,255,255,0.12);
+        border-radius: 100px; overflow: hidden;
       }
       .grade-bar {
-        height: 100%;
-        border-radius: 100px;
+        height: 100%; border-radius: 100px;
         background: linear-gradient(90deg, var(--gold-lt), var(--gold));
         transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      /* ── Transcript Paper ─────────────────────────────── */
-      #result-card {
-        display: none;
-      }
+      /* ── Transcript Paper ── */
+      #result-card { display: none; }
 
       .transcript-paper {
         background: #fff;
@@ -504,17 +422,11 @@
         padding: 30px;
         position: relative;
       }
-      /* top accent bar via a real element injected in onclone for canvas */
       .transcript-accent-bar {
         height: 5px;
-        background: linear-gradient(
-          90deg,
-          var(--navy),
-          var(--gold),
-          var(--navy)
-        );
+        background: linear-gradient(90deg, var(--navy), var(--gold), var(--navy));
         border-radius: var(--radius) var(--radius) 0 0;
-        margin: -36px -36px 28px -36px; /* bleed to edges of padding */
+        margin: -36px -36px 28px -36px;
       }
       .transcript-header-section {
         text-align: center;
@@ -524,8 +436,7 @@
       }
       .transcript-uni-name {
         font-family: "Playfair Display", serif;
-        font-size: 1.5rem;
-        font-weight: 900;
+        font-size: 1.5rem; font-weight: 900;
         color: var(--navy);
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -545,28 +456,14 @@
         margin-bottom: 15px;
         color: var(--ink-2);
       }
-      .transcript-meta-grid div strong {
-        color: var(--ink);
-        margin-right: 4px;
-      }
+      .transcript-meta-grid div strong { color: var(--ink); margin-right: 4px; }
 
-      #resTable thead th {
-        background: #f2f0ea;
-        color: var(--ink-2);
-        font-size: 0.7rem;
-      }
-      #resTable thead th:first-child {
-        border-radius: 8px 0 0 8px;
-      }
-      #resTable thead th:last-child {
-        border-radius: 0 8px 8px 0;
-      }
-      #resTable tbody td {
-        color: var(--ink);
-        padding: 10px 14px;
-        word-break: break-word;
-      }
+      #resTable thead th { background: #f2f0ea; color: var(--ink-2); font-size: 0.7rem; }
+      #resTable thead th:first-child { border-radius: 8px 0 0 8px; }
+      #resTable thead th:last-child  { border-radius: 0 8px 8px 0; }
+      #resTable tbody td { color: var(--ink); padding: 10px 14px; word-break: break-word; }
 
+      /* ── Summary Box (semester only — original style) ── */
       .summary-box {
         margin-top: 10px;
         border: 1.5px solid var(--border);
@@ -581,9 +478,7 @@
         border-bottom: 1px solid #f0ede6;
         font-size: 0.9rem;
       }
-      .summary-box .row:last-child {
-        border-bottom: none;
-      }
+      .summary-box .row:last-child { border-bottom: none; }
       .summary-box .row.highlight {
         background: var(--navy);
         color: #fff;
@@ -595,6 +490,54 @@
         font-size: 1.2rem;
         color: var(--gold-lt);
       }
+
+      /* ── CGPA Summary Table (shown when previous data entered) ── */
+      .cgpa-summary-wrap {
+        margin-top: 10px;
+        border: 1.5px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .cgpa-summary-wrap table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto;
+        font-size: 0.88rem;
+      }
+      .cgpa-summary-wrap thead th {
+        padding: 9px 12px;
+        font-size: 0.69rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: rgba(255,255,255,0.9);
+        background: var(--navy);
+        text-align: center;
+        white-space: nowrap;
+        border-radius: 0;
+      }
+      .cgpa-summary-wrap thead th:first-child { text-align: left; }
+      .cgpa-summary-wrap tbody td {
+        padding: 9px 12px;
+        border-bottom: 1px solid #f0ede6;
+        text-align: center;
+        color: var(--ink);
+        font-size: 0.88rem;
+      }
+      .cgpa-summary-wrap tbody td:first-child { text-align: left; font-weight: 500; }
+      .cgpa-summary-wrap tbody tr:last-child td { border-bottom: none; }
+      .cgpa-summary-wrap tbody tr.cum-row td {
+        background: var(--navy);
+        color: #fff;
+        font-weight: 600;
+        border-bottom: none;
+      }
+      .cgpa-summary-wrap tbody tr.cum-row td.cum-gpa-val {
+        font-family: "Playfair Display", serif;
+        font-size: 1.1rem;
+        color: var(--gold-lt);
+      }
+
       .dev-credit {
         text-align: center;
         font-size: 0.72rem;
@@ -603,73 +546,37 @@
         letter-spacing: 0.06em;
       }
 
-      /* ── Animations ───────────────────────────────────── */
+      /* ── Animations ── */
       @keyframes fadeUp {
-        from {
-          opacity: 0;
-          transform: translateY(18px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+        from { opacity: 0; transform: translateY(18px); }
+        to   { opacity: 1; transform: translateY(0); }
       }
-      .reveal {
-        animation: fadeUp 0.5s ease both;
-      }
-      .reveal-d1 {
-        animation-delay: 0.08s;
-      }
-      .reveal-d2 {
-        animation-delay: 0.16s;
-      }
+      .reveal { animation: fadeUp 0.5s ease both; }
+      .reveal-d1 { animation-delay: 0.08s; }
+      .reveal-d2 { animation-delay: 0.16s; }
 
-      /* ── Responsive ───────────────────────────────────── */
+      /* ── Responsive ── */
       @media (max-width: 640px) {
-        .student-grid {
-          grid-template-columns: 1fr;
-        }
-        .full-width {
-          grid-column: span 1;
-        }
-        .gpa-hero {
-          flex-direction: column;
-          text-align: center;
-        }
-        .transcript-meta-grid {
-          grid-template-columns: 1fr;
-        }
-        .transcript-paper {
-          padding: 24px 18px;
-        }
-        .transcript-accent-bar {
-          margin: -24px -18px 24px -18px;
-        }
-        .card {
-          padding: 20px 18px;
-        }
-        .main {
-          padding: 28px 16px 50px;
-        }
+        .student-grid { grid-template-columns: 1fr; }
+        .full-width { grid-column: span 1; }
+        .gpa-hero { flex-direction: column; text-align: center; }
+        .transcript-meta-grid { grid-template-columns: 1fr; }
+        .transcript-paper { padding: 24px 18px; }
+        .transcript-accent-bar { margin: -24px -18px 24px -18px; }
+        .card { padding: 20px 18px; }
+        .main { padding: 28px 16px 50px; }
+        .prev-section { padding: 20px 18px; }
       }
-
       @media print {
-        .no-print {
-          display: none !important;
-        }
-        body::before {
-          display: none;
-        }
-        .page-hero {
-          display: none;
-        }
-        .transcript-paper {
-          box-shadow: none;
-        }
+        .no-print { display: none !important; }
+        body::before { display: none; }
+        .page-hero { display: none; }
+        .transcript-paper { box-shadow: none; }
       }
     </style>
   </head>
   <body>
+
     <!-- ── Hero ── -->
     <div class="page-hero no-print">
       <div class="hero-badge">Academic Tool</div>
@@ -677,45 +584,32 @@
         GPA Calculator &amp;<br /><span>Transcript Generator</span>
       </h1>
       <p class="hero-sub">
-    <strong>Privacy Note:</strong> This is a client-side tool. Your data is processed in your browser and is never sent to a server or stored.
+        <strong>Privacy Note:</strong> This is a client-side tool. Your data is processed in your browser and is never sent to a server or stored.
       </p>
     </div>
 
     <!-- ── Input ── -->
     <div class="main no-print">
+
+      <!-- 01 Student Info — unchanged from original -->
       <div class="section-label">01 — Student Information</div>
       <div class="card reveal">
         <div class="student-grid">
           <div class="field-wrap full-width">
             <label class="field-label">University Name</label>
-            <input
-              type="text"
-              id="uniNameInput"
-              placeholder="e.g. Debre Tabor University"
-              oninput="validateString(this)" />
+            <input type="text" id="uniNameInput" placeholder="e.g. Debre Tabor University" oninput="validateString(this)" />
           </div>
           <div class="field-wrap">
             <label class="field-label">Full Name</label>
-            <input
-              type="text"
-              id="studentName"
-              placeholder="Student Full Name"
-              oninput="validateString(this)" />
+            <input type="text" id="studentName" placeholder="Student Full Name" oninput="validateString(this)" />
           </div>
           <div class="field-wrap">
             <label class="field-label">Student ID</label>
-            <input
-              type="text"
-              id="studentID"
-              placeholder="e.g. DTU/001/18" />
+            <input type="text" id="studentID" placeholder="e.g. DTU/001/18" />
           </div>
           <div class="field-wrap">
             <label class="field-label">Department / Major</label>
-            <input
-              type="text"
-              id="department"
-              placeholder="e.g. Electrical and Computer Engineering"
-              oninput="validateString(this)" />
+            <input type="text" id="department" placeholder="e.g. Electrical and Computer Engineering" oninput="validateString(this)" />
           </div>
           <div class="field-wrap">
             <label class="field-label">Semester</label>
@@ -729,6 +623,7 @@
         </div>
       </div>
 
+      <!-- 02 Course Entries — unchanged from original -->
       <div class="section-label reveal reveal-d1">02 — Course Entries</div>
       <div class="card reveal reveal-d1">
         <div class="table-wrap">
@@ -749,35 +644,21 @@
             </thead>
             <tbody id="courseBody">
               <tr>
-                <td>
-                  <input
-                    type="text"
-                    class="c-name"
-                    placeholder="e.g. Mathematics"
-                    oninput="validateString(this)" />
-                </td>
-                <td>
-                  <input
-                    type="number"
-                    class="c-credit"
-                    placeholder="5"
-                    min="1"
-                    step="1"
-                    oninput="validateInteger(this)" />
-                </td>
+                <td><input type="text" class="c-name" placeholder="e.g. Mathematics" oninput="validateString(this)" /></td>
+                <td><input type="number" class="c-credit" placeholder="5" min="1" step="1" oninput="validateInteger(this)" /></td>
                 <td>
                   <div class="select-wrap">
                     <select class="c-grade">
                       <option value="4.0">A+ / A (4.0) - (85-100)</option>
-                      <option value="3.75">A− (3.75) - (80-85) </option>
-                      <option value="3.5">B+ (3.5) - (75-80) </option>
-                      <option value="3.0">B (3.0) - (70-75) </option>
-                      <option value="2.75">B− (2.75) - (65-70) </option>
-                      <option value="2.5">C+ (2.5) - (60-65) </option>
-                      <option value="2.0">C (2.0) - (50-60) </option>
-                      <option value="1.75">C− (1.75) - (45-50) </option>
-                      <option value="1.0">D (1.0) - (40-45) </option>
-                      <option value="0">F (0.0) - (0-40) </option>
+                      <option value="3.75">A− (3.75) - (80-85)</option>
+                      <option value="3.5">B+ (3.5) - (75-80)</option>
+                      <option value="3.0">B (3.0) - (70-75)</option>
+                      <option value="2.75">B− (2.75) - (65-70)</option>
+                      <option value="2.5">C+ (2.5) - (60-65)</option>
+                      <option value="2.0">C (2.0) - (50-60)</option>
+                      <option value="1.75">C− (1.75) - (45-50)</option>
+                      <option value="1.0">D (1.0) - (40-45)</option>
+                      <option value="0">F (0.0) - (0-40)</option>
                     </select>
                   </div>
                 </td>
@@ -788,18 +669,43 @@
         </div>
         <div class="actions-row">
           <button class="btn btn-add" onclick="addRow()">＋ Add Course</button>
-          <button class="btn btn-calc" onclick="calculateGPA()"> Calculate &amp; Generate Transcript
-          </button>
+          <button class="btn btn-calc" onclick="calculateGPA()">Calculate &amp; Generate Transcript</button>
         </div>
       </div>
+
+      <!-- 03 Previous Semester — NEW collapsible section -->
+      <div class="section-label reveal reveal-d2">03 — Previous Semester <span style="opacity:0.5;font-weight:400;text-transform:none;letter-spacing:0;font-size:0.85em">(optional · for CGPA)</span></div>
+
+      <button class="prev-toggle-btn reveal reveal-d2" id="prevToggleBtn" onclick="togglePrevSection()">
+        <span class="toggle-icon">＋</span>
+        <span class="toggle-label">Add previous semester data to calculate CGPA</span>
+        <span class="toggle-arrow">▼</span>
+      </button>
+
+      <div class="prev-section" id="prevSection">
+        <p class="prev-hint">Enter your cumulative totals from the <em>Previous Total</em> row on your last grade report. Leave blank to show this semester only.</p>
+        <div class="student-grid">
+          <div class="field-wrap">
+            <label class="field-label">Previous Total Credit Hours</label>
+            <input type="number" id="prevCredits" placeholder="e.g. 72" min="0" step="1" oninput="validateInteger(this)" />
+          </div>
+          <div class="field-wrap">
+            <label class="field-label">Previous Total Grade Points</label>
+            <input type="number" id="prevGP" placeholder="e.g. 228.25" min="0" step="0.01" />
+          </div>
+        </div>
+      </div>
+
     </div>
+    <!-- end .main input -->
 
     <!-- ── Results ── -->
     <div id="result-card" class="main">
+
       <div class="gpa-hero reveal">
         <div class="gpa-circle">
           <div class="gpa-number" id="heroGPA">0.00</div>
-          <div class="gpa-label">GPA</div>
+          <div class="gpa-label" id="heroGPALabel">GPA</div>
         </div>
         <div class="gpa-meta">
           <h3 id="heroStatus">—</h3>
@@ -810,13 +716,9 @@
         </div>
       </div>
 
-      <div class="section-label no-print reveal reveal-d1">
-        Official Transcript
-      </div>
+      <div class="section-label no-print reveal reveal-d1">Official Transcript</div>
 
-      <!-- FIX 3: id="transcriptPaper" is the capture target -->
       <div class="transcript-paper reveal reveal-d1" id="transcriptPaper">
-        <!-- accent bar as a real DOM element so html2canvas captures it -->
         <div class="transcript-accent-bar"></div>
 
         <div class="transcript-header-section">
@@ -831,6 +733,7 @@
           <div><strong>Semester:</strong><span id="resSem"></span></div>
         </div>
 
+        <!-- Course table — always visible -->
         <table id="resTable">
           <colgroup>
             <col class="col-name" />
@@ -847,7 +750,8 @@
           <tbody id="resBody"></tbody>
         </table>
 
-        <div class="summary-box">
+        <!-- Semester-only summary (original style, hidden when CGPA active) -->
+        <div class="summary-box" id="semSummaryBox">
           <div class="row">
             <span>Total Credit Hours</span><span id="totalCr">0</span>
           </div>
@@ -858,19 +762,59 @@
             <span>Semester GPA</span>
             <span id="finalGPA">0.00</span>
           </div>
+        </div>
+
+        <!-- CGPA summary table (hidden when no previous data) -->
+        <div class="cgpa-summary-wrap" id="cgpaSummaryWrap" style="display:none;">
+          <table>
+            <thead>
+              <tr>
+                <th>Summary</th>
+                <th>Credit</th>
+                <th>Grade Points</th>
+                <th>GPA</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Previous Total</td>
+                <td id="cgpaPrevCr">—</td>
+                <td id="cgpaPrevGP">—</td>
+                <td id="cgpaPrevGPA">—</td>
+                <td id="cgpaPrevGrade">—</td>
+              </tr>
+              <tr>
+                <td>Semester Total</td>
+                <td id="cgpaSemCr">—</td>
+                <td id="cgpaSemGP">—</td>
+                <td id="cgpaSemGPA">—</td>
+                <td id="cgpaSemGrade">—</td>
+              </tr>
+              <tr class="cum-row">
+                <td>Cumulative</td>
+                <td id="cgpaCumCr">—</td>
+                <td id="cgpaCumGP">—</td>
+                <td class="cum-gpa-val" id="cgpaCumGPA">—</td>
+                <td id="cgpaCumGrade">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </div>
-        
-    </div>
-              <div class="dev-credit">Developed by ECE Student @ DTU</div>
-      <button
-        id="downloadBtn"
-        class="btn btn-download no-print"
-        onclick="downloadTranscript()">
+      <!-- end transcript-paper -->
+
+      <div class="dev-credit">Developed by ECE Student @ DTU</div>
+      <button id="downloadBtn" class="btn btn-download no-print" onclick="downloadTranscript()">
         ↓ Download Transcript as PNG
       </button>
 
+    </div>
+    <!-- end result-card -->
+
     <script>
-      /* ── Validation ────────────────────────────────── */
+      /* ── Validation ── */
       function validateString(input) {
         input.value = input.value.replace(/[^a-zA-Z\s]/g, "");
         if (input.value.trim()) input.classList.remove("error-border");
@@ -878,69 +822,83 @@
       function validateInteger(input) {
         input.value = input.value.replace(/[^0-9]/g, "");
       }
-      document.addEventListener("contextmenu", (e) => e.preventDefault());
+      document.addEventListener("contextmenu", e => e.preventDefault());
 
-      /* ── Add Row ───────────────────────────────────── */
+      /* ── Toggle previous section ── */
+      function togglePrevSection() {
+        const sec = document.getElementById("prevSection");
+        const btn = document.getElementById("prevToggleBtn");
+        const isOpen = sec.classList.contains("open");
+        if (isOpen) {
+          sec.classList.remove("open");
+          btn.classList.remove("open");
+          btn.querySelector(".toggle-icon").textContent = "＋";
+          btn.querySelector(".toggle-label").textContent = "Add previous semester data to calculate CGPA";
+        } else {
+          sec.classList.add("open");
+          btn.classList.add("open");
+          btn.querySelector(".toggle-icon").textContent = "✕";
+          btn.querySelector(".toggle-label").textContent = "Hide previous semester data";
+        }
+      }
+
+      /* ── Add Row ── */
       function addRow() {
         const tbody = document.getElementById("courseBody");
         const row = document.createElement("tr");
         row.innerHTML = `
-      <td><input type="text" class="c-name" placeholder="Course name" oninput="validateString(this)" /></td>
-      <td><input type="number" class="c-credit" placeholder="3" min="1" step="1" oninput="validateInteger(this)" /></td>
-      <td>
-        <div class="select-wrap">
-          <select class="c-grade">
-            <option value="4.0">A+ / A (4.0) - (85-100)</option>
-                      <option value="3.75">A− (3.75) - (80-85) </option>
-                      <option value="3.5">B+ (3.5) - (75-80) </option>
-                      <option value="3.0">B (3.0) - (70-75) </option>
-                      <option value="2.75">B− (2.75) - (65-70) </option>
-                      <option value="2.5">C+ (2.5) - (60-65) </option>
-                      <option value="2.0">C (2.0) - (50-60) </option>
-                      <option value="1.75">C− (1.75) - (45-50) </option>
-                      <option value="1.0">D (1.0) - (40-45) </option>
-                      <option value="0">F (0.0) - (0-40) </option>
-          </select>
-        </div>
-      </td>
-      <td><button class="btn-remove" onclick="this.closest('tr').remove()">✕</button></td>
-    `;
+          <td><input type="text" class="c-name" placeholder="Course name" oninput="validateString(this)" /></td>
+          <td><input type="number" class="c-credit" placeholder="3" min="1" step="1" oninput="validateInteger(this)" /></td>
+          <td>
+            <div class="select-wrap">
+              <select class="c-grade">
+                <option value="4.0">A+ / A (4.0) - (85-100)</option>
+                <option value="3.75">A− (3.75) - (80-85)</option>
+                <option value="3.5">B+ (3.5) - (75-80)</option>
+                <option value="3.0">B (3.0) - (70-75)</option>
+                <option value="2.75">B− (2.75) - (65-70)</option>
+                <option value="2.5">C+ (2.5) - (60-65)</option>
+                <option value="2.0">C (2.0) - (50-60)</option>
+                <option value="1.75">C− (1.75) - (45-50)</option>
+                <option value="1.0">D (1.0) - (40-45)</option>
+                <option value="0">F (0.0) - (0-40)</option>
+              </select>
+            </div>
+          </td>
+          <td><button class="btn-remove" onclick="this.closest('tr').remove()">✕</button></td>`;
         tbody.appendChild(row);
-        row.style.cssText =
-          "opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease";
-        requestAnimationFrame(() => {
-          row.style.opacity = "1";
-          row.style.transform = "translateY(0)";
-        });
+        row.style.cssText = "opacity:0;transform:translateY(10px);transition:opacity .25s ease,transform .25s ease";
+        requestAnimationFrame(() => { row.style.opacity = "1"; row.style.transform = "translateY(0)"; });
       }
 
-      /* ── GPA Status ────────────────────────────────── */
+      /* ── GPA Status ── */
       function gpaStatus(gpa) {
-        if (gpa >= 3.75)
-          return ["Excelent", "Outstanding academic achievement."];
-        if (gpa >= 3.0)
-          return ["very good", "Good academic standing."];
-        if (gpa >= 2.5) 
-        return ["Good", "Above average performance."];
-        if (gpa >= 2.0)
-          return ["Satisfactory", "Meeting academic requirements."];
-        if (gpa >= 1.75)
-          return ["Unsatisfactory", "Consider strengthening some areas."];
-        if (gpa >= 1.0)
-          return ["Very Poor", "Academic improvement recommended."];
+        if (gpa >= 3.75) return ["Excellent", "Outstanding academic achievement."];
+        if (gpa >= 3.0)  return ["Very Good", "Good academic standing."];
+        if (gpa >= 2.5)  return ["Good", "Above average performance."];
+        if (gpa >= 2.0)  return ["Satisfactory", "Meeting academic requirements."];
+        if (gpa >= 1.75) return ["Unsatisfactory", "Consider strengthening some areas."];
+        if (gpa >= 1.0)  return ["Very Poor", "Academic improvement recommended."];
         return ["Below Standard", "Fail"];
       }
 
-      /* ── Calculate ─────────────────────────────────── */
+      /* ── Grade letter from GPA ── */
+      function gpaToGrade(gpa) {
+        if (gpa >= 3.75) return "A";
+        if (gpa >= 3.5)  return "A−";
+        if (gpa >= 3.0)  return "B+";
+        if (gpa >= 2.5)  return "B";
+        if (gpa >= 2.0)  return "C";
+        if (gpa >= 1.0)  return "D";
+        return "F";
+      }
+
+      /* ── Calculate ── */
       function calculateGPA() {
-        const fields = [
-          "uniNameInput",
-          "studentName",
-          "department",
-          "studentID",
-        ];
+        // Validate required fields
+        const fields = ["uniNameInput", "studentName", "department", "studentID"];
         let hasError = false;
-        fields.forEach((id) => {
+        fields.forEach(id => {
           const el = document.getElementById(id);
           if (!el.value.trim()) {
             el.classList.add("error-border", "shake");
@@ -952,156 +910,236 @@
         });
         if (hasError) return;
 
-        const names = document.querySelectorAll(".c-name");
+        // Gather courses
+        const names   = document.querySelectorAll(".c-name");
         const credits = document.querySelectorAll(".c-credit");
-        const grades = document.querySelectorAll(".c-grade");
-        let totalCr = 0,
-          totalGP = 0,
-          resHtml = "";
+        const grades  = document.querySelectorAll(".c-grade");
+        let semCr = 0, semGP = 0, resHtml = "";
 
         for (let i = 0; i < names.length; i++) {
-          const cr = parseInt(credits[i].value) || 0;
+          const cr   = parseInt(credits[i].value) || 0;
           const gVal = parseFloat(grades[i].value);
-          const gp = cr * gVal;
+          const gp   = cr * gVal;
           if (cr > 0) {
-            totalCr += cr;
-            totalGP += gp;
+            semCr += cr;
+            semGP += gp;
             resHtml += `<tr>
-          <td>${names[i].value || "Course " + (i + 1)}</td>
-          <td style="text-align:center">${cr}</td>
-          <td style="text-align:center">${gp.toFixed(2)}</td>
-        </tr>`;
+              <td>${names[i].value || "Course " + (i + 1)}</td>
+              <td style="text-align:center">${cr}</td>
+              <td style="text-align:center">${gp.toFixed(2)}</td>
+            </tr>`;
           }
         }
 
-        const gpa = totalCr > 0 ? totalGP / totalCr : 0;
-        const gpaFixed = gpa.toFixed(2);
-        const [status, desc] = gpaStatus(gpa);
+        const semGPA = semCr > 0 ? semGP / semCr : 0;
 
-        document.getElementById("resUniName").textContent =
-          document.getElementById("uniNameInput").value;
-        document.getElementById("resName").textContent =
-          " " + document.getElementById("studentName").value;
-        document.getElementById("resID").textContent =
-          " " + document.getElementById("studentID").value;
-        document.getElementById("resDept").textContent =
-          " " + document.getElementById("department").value;
-        document.getElementById("resSem").textContent =
-          " Semester " + document.getElementById("semester").value;
-        document.getElementById("resBody").innerHTML = resHtml;
-        document.getElementById("totalCr").textContent = totalCr;
-        document.getElementById("totalGP").textContent = totalGP.toFixed(2);
-        document.getElementById("finalGPA").textContent = gpaFixed;
-        document.getElementById("heroGPA").textContent = gpaFixed;
-        document.getElementById("heroStatus").textContent = status;
-        document.getElementById("heroDesc").textContent = desc;
+        // Check previous data
+        const prevCrRaw = document.getElementById("prevCredits").value.trim();
+        const prevGPRaw = document.getElementById("prevGP").value.trim();
+        const hasPrev   = prevCrRaw !== "" && prevGPRaw !== "" && parseFloat(prevCrRaw) > 0;
 
+        let prevCr = 0, prevGPVal = 0, prevGPA = 0;
+        let cumCr = 0, cumGPTotal = 0, cumGPA = 0;
+
+        if (hasPrev) {
+          prevCr    = parseFloat(prevCrRaw) || 0;
+          prevGPVal = parseFloat(prevGPRaw) || 0;
+          prevGPA   = prevCr > 0 ? prevGPVal / prevCr : 0;
+          cumCr     = prevCr + semCr;
+          cumGPTotal= prevGPVal + semGP;
+          cumGPA    = cumCr > 0 ? cumGPTotal / cumCr : 0;
+        }
+
+        // Fill transcript header
+        document.getElementById("resUniName").textContent = document.getElementById("uniNameInput").value;
+        document.getElementById("resName").textContent    = " " + document.getElementById("studentName").value;
+        document.getElementById("resID").textContent      = " " + document.getElementById("studentID").value;
+        document.getElementById("resDept").textContent    = " " + document.getElementById("department").value;
+        document.getElementById("resSem").textContent     = " Semester " + document.getElementById("semester").value;
+        document.getElementById("resBody").innerHTML      = resHtml;
+
+        // Fill semester-only summary
+        document.getElementById("totalCr").textContent  = semCr;
+        document.getElementById("totalGP").textContent  = semGP.toFixed(2);
+        document.getElementById("finalGPA").textContent = semGPA.toFixed(2);
+
+        // Switch summary: semester-only vs CGPA table
+        if (hasPrev) {
+          document.getElementById("semSummaryBox").style.display   = "none";
+          document.getElementById("cgpaSummaryWrap").style.display = "block";
+
+          document.getElementById("cgpaPrevCr").textContent    = prevCr;
+          document.getElementById("cgpaPrevGP").textContent    = prevGPVal.toFixed(2);
+          document.getElementById("cgpaPrevGPA").textContent   = prevGPA.toFixed(2);
+          document.getElementById("cgpaPrevGrade").textContent = gpaToGrade(prevGPA);
+
+          document.getElementById("cgpaSemCr").textContent    = semCr;
+          document.getElementById("cgpaSemGP").textContent    = semGP.toFixed(2);
+          document.getElementById("cgpaSemGPA").textContent   = semGPA.toFixed(2);
+          document.getElementById("cgpaSemGrade").textContent = gpaToGrade(semGPA);
+
+          document.getElementById("cgpaCumCr").textContent    = cumCr;
+          document.getElementById("cgpaCumGP").textContent    = cumGPTotal.toFixed(2);
+          document.getElementById("cgpaCumGPA").textContent   = cumGPA.toFixed(2);
+          document.getElementById("cgpaCumGrade").textContent = gpaToGrade(cumGPA);
+        } else {
+          document.getElementById("semSummaryBox").style.display   = "block";
+          document.getElementById("cgpaSummaryWrap").style.display = "none";
+        }
+
+        // Hero display
+        const displayGPA = hasPrev ? cumGPA : semGPA;
+        const [status, desc] = gpaStatus(displayGPA);
+        document.getElementById("heroGPA").textContent      = displayGPA.toFixed(2);
+        document.getElementById("heroGPALabel").textContent = hasPrev ? "CGPA" : "GPA";
+        document.getElementById("heroStatus").textContent   = status;
+        document.getElementById("heroDesc").textContent     = hasPrev
+          ? "Cumulative GPA across all recorded semesters."
+          : desc;
         setTimeout(() => {
-          document.getElementById("gradeBar").style.width =
-            Math.min((gpa / 4) * 100, 100) + "%";
+          document.getElementById("gradeBar").style.width = Math.min((displayGPA / 4) * 100, 100) + "%";
         }, 200);
 
+        // Show result
         const rc = document.getElementById("result-card");
         rc.style.display = "block";
-        rc.querySelectorAll(".reveal").forEach((el) => {
+        rc.querySelectorAll(".reveal").forEach(el => {
           el.style.animation = "none";
-          requestAnimationFrame(() => {
-            el.style.animation = "";
-          });
+          requestAnimationFrame(() => { el.style.animation = ""; });
         });
         window.scrollTo({ top: rc.offsetTop - 20, behavior: "smooth" });
       }
 
-      /* ── Download ────────────────────────────── */
+      /* ── Download ── */
       function downloadTranscript() {
         const paper = document.getElementById("transcriptPaper");
-        const btn = document.getElementById("downloadBtn");
-        const name = document.getElementById("studentName").value || "Student";
+        const btn   = document.getElementById("downloadBtn");
+        const name  = document.getElementById("studentName").value || "Student";
 
         btn.textContent = "Preparing image…";
         btn.disabled = true;
 
-        // Let the browser fully paint before capturing
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            html2canvas(paper, {
-              scale: 3,
-              backgroundColor: "#ffffff",
-              useCORS: true,
-              allowTaint: true,
-              foreignObjectRendering: false,
-              logging: false,
-              onclone(clonedDoc) {
-                const el = clonedDoc.getElementById("transcriptPaper");
-                if (!el) return;
-                // Remove styles that confuse html2canvas
-                el.style.cssText = [
-                  "position:relative",
-                  "background:#fff",
-                  "padding:36px",
-                  "border:1px solid #e4e2db",
-                  "border-radius:0",
-                  "box-shadow:none",
-                  "animation:none",
-                  "opacity:1",
-                  "transform:none",
-                  "width:" + paper.offsetWidth + "px",
-                ].join(";");
-                // Ensure accent bar renders
-                const bar = el.querySelector(".transcript-accent-bar");
-                if (bar) {
-                  bar.style.cssText =
-                    "height:5px;background:linear-gradient(90deg,#0f2545,#c8973a,#0f2545);margin:-36px -36px 28px -36px;display:block;";
+        // Snapshot current scroll + position
+        const rect = paper.getBoundingClientRect();
+
+        // Build a clean off-screen clone with all inline styles resolved
+        const clone = paper.cloneNode(true);
+        clone.style.cssText = [
+          "position:fixed",
+          "top:0",
+          "left:0",
+          "background:#ffffff",
+          "padding:36px",
+          "border-radius:0",
+          "box-shadow:none",
+          "border:none",
+          "animation:none",
+          "opacity:1",
+          "transform:none",
+          "z-index:-9999",
+          "width:" + paper.offsetWidth + "px",
+          "font-family:DM Sans,sans-serif",
+        ].join(";");
+
+        // Fix accent bar gradient (html2canvas can't parse CSS vars)
+        const bar = clone.querySelector(".transcript-accent-bar");
+        if (bar) {
+          bar.style.cssText =
+            "height:5px;" +
+            "background:linear-gradient(90deg,#0f2545,#c8973a,#0f2545);" +
+            "margin:-36px -36px 28px -36px;" +
+            "display:block;" +
+            "border-radius:0;";
+        }
+
+        // Fix navy backgrounds (CSS vars won't resolve in canvas)
+        clone.querySelectorAll("thead th").forEach(th => {
+          if (getComputedStyle(th).background.includes("rgb(15, 37, 69)") ||
+              th.closest("#resTable")) {
+            th.style.background = "#f2f0ea";
+            th.style.color = "#3a3d48";
+          }
+        });
+        // CGPA summary table headers
+        clone.querySelectorAll(".cgpa-summary-wrap thead th").forEach(th => {
+          th.style.background = "#0f2545";
+          th.style.color = "#ffffff";
+        });
+        // CGPA cumulative row
+        clone.querySelectorAll(".cum-row td").forEach(td => {
+          td.style.background = "#0f2545";
+          td.style.color = "#ffffff";
+        });
+        clone.querySelectorAll(".cum-gpa-val").forEach(td => {
+          td.style.color = "#e8c06a";
+          td.style.fontFamily = "Georgia,serif";
+          td.style.fontSize = "1.1rem";
+        });
+        // Semester summary highlight row
+        clone.querySelectorAll(".summary-box .highlight").forEach(row => {
+          row.style.background = "#0f2545";
+          row.style.color = "#ffffff";
+        });
+        clone.querySelectorAll(".summary-box .highlight span:last-child").forEach(s => {
+          s.style.color = "#e8c06a";
+          s.style.fontFamily = "Georgia,serif";
+          s.style.fontSize = "1.2rem";
+        });
+
+        document.body.appendChild(clone);
+
+        setTimeout(() => {
+          html2canvas(clone, {
+            scale: 3,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+            allowTaint: true,
+            foreignObjectRendering: false,
+            logging: false,
+            width: clone.offsetWidth,
+            height: clone.offsetHeight,
+          })
+          .then(canvas => {
+            document.body.removeChild(clone);
+            const link = document.createElement("a");
+            link.download = "Transcript_" + name + ".png";
+            link.href = canvas.toDataURL("image/png");
+            link.click();
+            btn.textContent = "↓ Download Transcript as PNG";
+            btn.disabled = false;
+          })
+          .catch(err => {
+            document.body.removeChild(clone);
+            console.error(err);
+            btn.textContent = "↓ Download Transcript as PNG";
+            btn.disabled = false;
+          });
+        }, 200);
+      }
+    </script>
+
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('sw.js').then(reg => {
+            console.log('SW Registered');
+            reg.update();
+            reg.onupdatefound = () => {
+              const installingWorker = reg.installing;
+              installingWorker.onstatechange = () => {
+                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  installingWorker.postMessage({ type: 'SKIP_WAITING' });
                 }
-              },
-            })
-              .then((canvas) => {
-                const link = document.createElement("a");
-                link.download = `Transcript_${name}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
-                btn.textContent = "↓ Download Transcript as PNG";
-                btn.disabled = false;
-              })
-              .catch((err) => {
-                console.error(err);
-                btn.textContent = "↓ Download Transcript as PNG";
-                btn.disabled = false;
-              });
-          }, 150);
+              };
+            };
+          });
+          let refreshing = false;
+          navigator.serviceWorker.addEventListener('controllerchange', () => {
+            if (!refreshing) { window.location.reload(); refreshing = true; }
+          });
         });
       }
     </script>
-    <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('sw.js').then(reg => {
-        console.log('SW Registered');
 
-        // Check for updates frequently
-        reg.update();
-
-        reg.onupdatefound = () => {
-          const installingWorker = reg.installing;
-          installingWorker.onstatechange = () => {
-            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              // Tell the new SW to take over immediately
-              installingWorker.postMessage({ type: 'SKIP_WAITING' });
-            }
-          };
-        };
-      });
-
-      // This logic forces the reload when the new SW takes control
-      let refreshing = false;
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
-        if (!refreshing) {
-          window.location.reload();
-          refreshing = true;
-        }
-      });
-    });
-  }
-</script>
   </body>
 </html>
