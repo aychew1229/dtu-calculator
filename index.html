@@ -492,39 +492,42 @@
       }
 
       /* ── CGPA Summary Table (shown when previous data entered) ── */
+      /* ── CGPA Summary Table ── */
       .cgpa-summary-wrap {
         margin-top: 10px;
         border: 1.5px solid var(--border);
         border-radius: 10px;
-        overflow: hidden;
+        overflow: visible;
       }
       .cgpa-summary-wrap table {
         width: 100%;
         border-collapse: collapse;
-        table-layout: auto;
+        table-layout: fixed;
         font-size: 0.88rem;
       }
       .cgpa-summary-wrap thead th {
-        padding: 9px 12px;
-        font-size: 0.69rem;
+        padding: 9px 6px;
+        font-size: 0.67rem;
         font-weight: 600;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.05em;
         text-transform: uppercase;
         color: rgba(255,255,255,0.9);
         background: var(--navy);
         text-align: center;
-        white-space: nowrap;
+        white-space: normal;
+        word-break: break-word;
         border-radius: 0;
       }
-      .cgpa-summary-wrap thead th:first-child { text-align: left; }
+      .cgpa-summary-wrap thead th:first-child { text-align: left; padding-left: 12px; }
       .cgpa-summary-wrap tbody td {
-        padding: 9px 12px;
+        padding: 9px 6px;
         border-bottom: 1px solid #f0ede6;
         text-align: center;
         color: var(--ink);
         font-size: 0.88rem;
+        word-break: break-word;
       }
-      .cgpa-summary-wrap tbody td:first-child { text-align: left; font-weight: 500; }
+      .cgpa-summary-wrap tbody td:first-child { text-align: left; font-weight: 500; padding-left: 12px; }
       .cgpa-summary-wrap tbody tr:last-child td { border-bottom: none; }
       .cgpa-summary-wrap tbody tr.cum-row td {
         background: var(--navy);
@@ -767,6 +770,13 @@
         <!-- CGPA summary table (hidden when no previous data) -->
         <div class="cgpa-summary-wrap" id="cgpaSummaryWrap" style="display:none;">
           <table>
+            <colgroup>
+              <col style="width:30%">
+              <col style="width:15%">
+              <col style="width:25%">
+              <col style="width:15%">
+              <col style="width:15%">
+            </colgroup>
             <thead>
               <tr>
                 <th>Summary</th>
@@ -884,11 +894,14 @@
 
       /* ── Grade letter from GPA ── */
       function gpaToGrade(gpa) {
-        if (gpa >= 3.75) return "A";
-        if (gpa >= 3.5)  return "A−";
-        if (gpa >= 3.0)  return "B+";
-        if (gpa >= 2.5)  return "B";
+        if (gpa >= 4.0)  return "A";
+        if (gpa >= 3.75) return "A−";
+        if (gpa >= 3.5)  return "B+";
+        if (gpa >= 3.0)  return "B";
+        if (gpa >= 2.75) return "B−";
+        if (gpa >= 2.5)  return "C+";
         if (gpa >= 2.0)  return "C";
+        if (gpa >= 1.75) return "C−";
         if (gpa >= 1.0)  return "D";
         return "F";
       }
@@ -1019,102 +1032,71 @@
         btn.textContent = "Preparing image…";
         btn.disabled = true;
 
-        // Snapshot current scroll + position
-        const rect = paper.getBoundingClientRect();
+        // Save original styles
+        const origStyle      = paper.style.cssText;
+        const origParent     = paper.parentElement;
+        const origWidth      = paper.style.width;
+        const origMinWidth   = paper.style.minWidth;
+        const origBorderRadius = paper.style.borderRadius;
+        const origBoxShadow  = paper.style.boxShadow;
+        const origAnimation  = paper.style.animation;
 
-        // Build a clean off-screen clone with all inline styles resolved
-        const clone = paper.cloneNode(true);
-        clone.style.cssText = [
-          "position:fixed",
-          "top:0",
-          "left:0",
-          "background:#ffffff",
-          "padding:36px",
-          "border-radius:0",
-          "box-shadow:none",
-          "border:none",
-          "animation:none",
-          "opacity:1",
-          "transform:none",
-          "z-index:-9999",
-          "width:" + paper.offsetWidth + "px",
-          "font-family:DM Sans,sans-serif",
-        ].join(";");
+        // Force a clean fixed-width render so nothing wraps or clips
+        const CAPTURE_WIDTH = 780;
+        paper.style.width        = CAPTURE_WIDTH + "px";
+        paper.style.minWidth     = CAPTURE_WIDTH + "px";
+        paper.style.borderRadius = "0";
+        paper.style.boxShadow    = "none";
+        paper.style.animation    = "none";
+        paper.style.opacity      = "1";
+        paper.style.transform    = "none";
 
-        // Fix accent bar gradient (html2canvas can't parse CSS vars)
-        const bar = clone.querySelector(".transcript-accent-bar");
+        // Fix accent bar margin to match forced padding
+        const bar = paper.querySelector(".transcript-accent-bar");
+        const origBarStyle = bar ? bar.style.cssText : "";
         if (bar) {
           bar.style.cssText =
             "height:5px;" +
             "background:linear-gradient(90deg,#0f2545,#c8973a,#0f2545);" +
-            "margin:-36px -36px 28px -36px;" +
-            "display:block;" +
-            "border-radius:0;";
+            "margin:-30px -30px 28px -30px;" +
+            "display:block;border-radius:0;";
         }
 
-        // Fix navy backgrounds (CSS vars won't resolve in canvas)
-        clone.querySelectorAll("thead th").forEach(th => {
-          if (getComputedStyle(th).background.includes("rgb(15, 37, 69)") ||
-              th.closest("#resTable")) {
-            th.style.background = "#f2f0ea";
-            th.style.color = "#3a3d48";
-          }
-        });
-        // CGPA summary table headers
-        clone.querySelectorAll(".cgpa-summary-wrap thead th").forEach(th => {
-          th.style.background = "#0f2545";
-          th.style.color = "#ffffff";
-        });
-        // CGPA cumulative row
-        clone.querySelectorAll(".cum-row td").forEach(td => {
-          td.style.background = "#0f2545";
-          td.style.color = "#ffffff";
-        });
-        clone.querySelectorAll(".cum-gpa-val").forEach(td => {
-          td.style.color = "#e8c06a";
-          td.style.fontFamily = "Georgia,serif";
-          td.style.fontSize = "1.1rem";
-        });
-        // Semester summary highlight row
-        clone.querySelectorAll(".summary-box .highlight").forEach(row => {
-          row.style.background = "#0f2545";
-          row.style.color = "#ffffff";
-        });
-        clone.querySelectorAll(".summary-box .highlight span:last-child").forEach(s => {
-          s.style.color = "#e8c06a";
-          s.style.fontFamily = "Georgia,serif";
-          s.style.fontSize = "1.2rem";
-        });
+        // Wait for reflow then capture
+        requestAnimationFrame(() => {
+          setTimeout(() => {
+            html2canvas(paper, {
+              scale: 2,
+              backgroundColor: "#ffffff",
+              useCORS: true,
+              allowTaint: true,
+              foreignObjectRendering: false,
+              logging: false,
+              width:  paper.offsetWidth,
+              height: paper.scrollHeight,
+              windowWidth: CAPTURE_WIDTH + 80,
+            })
+            .then(canvas => {
+              // Restore everything
+              paper.style.cssText        = origStyle;
+              if (bar) bar.style.cssText = origBarStyle;
 
-        document.body.appendChild(clone);
-
-        setTimeout(() => {
-          html2canvas(clone, {
-            scale: 3,
-            backgroundColor: "#ffffff",
-            useCORS: true,
-            allowTaint: true,
-            foreignObjectRendering: false,
-            logging: false,
-            width: clone.offsetWidth,
-            height: clone.offsetHeight,
-          })
-          .then(canvas => {
-            document.body.removeChild(clone);
-            const link = document.createElement("a");
-            link.download = "Transcript_" + name + ".png";
-            link.href = canvas.toDataURL("image/png");
-            link.click();
-            btn.textContent = "↓ Download Transcript as PNG";
-            btn.disabled = false;
-          })
-          .catch(err => {
-            document.body.removeChild(clone);
-            console.error(err);
-            btn.textContent = "↓ Download Transcript as PNG";
-            btn.disabled = false;
-          });
-        }, 200);
+              const link = document.createElement("a");
+              link.download = "Transcript_" + name + ".png";
+              link.href = canvas.toDataURL("image/png");
+              link.click();
+              btn.textContent = "↓ Download Transcript as PNG";
+              btn.disabled = false;
+            })
+            .catch(err => {
+              paper.style.cssText        = origStyle;
+              if (bar) bar.style.cssText = origBarStyle;
+              console.error(err);
+              btn.textContent = "↓ Download Transcript as PNG";
+              btn.disabled = false;
+            });
+          }, 300);
+        });
       }
     </script>
 
@@ -1140,6 +1122,5 @@
         });
       }
     </script>
-
   </body>
 </html>
