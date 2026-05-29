@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gpa-calc-v3.2';
+const CACHE_NAME = 'gpa-calc-v3.3';
 const ASSETS = [
   './',
   'index.html',
