@@ -1099,26 +1099,33 @@
     </script>
 
     <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('sw.js').then(reg => {
-            console.log('SW Registered');
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then((reg) => {
+          console.log('Service Worker safely initialized.');
+          
+          // Force the client browser to inspect GitHub server for an altered sw.js script right away on open
+          reg.update();
+
+          // Optional: Re-inspect for background script adjustments every 30 minutes if the tab is left open
+          setInterval(() => {
             reg.update();
-            reg.onupdatefound = () => {
-              const installingWorker = reg.installing;
-              installingWorker.onstatechange = () => {
-                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                  installingWorker.postMessage({ type: 'SKIP_WAITING' });
-                }
-              };
-            };
-          });
-          let refreshing = false;
-          navigator.serviceWorker.addEventListener('controllerchange', () => {
-            if (!refreshing) { window.location.reload(); refreshing = true; }
-          });
-        });
+          }, 30 * 60 * 1000);
+        })
+        .catch((err) => console.error('Service Worker registration failure:', err));
+    });
+
+    // Capture the lifecycle activation shift and automatically refresh the viewport
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        window.location.reload(); // Instantly presents your brand-new pushed app changes
+        refreshing = true;
       }
-    </script>
+    });
+  }
+</script>
+
   </body>
 </html>
