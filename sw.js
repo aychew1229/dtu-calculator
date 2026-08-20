@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gpa-calc-v3.6'; // IMPORTANT: Change this version tag (e.g., v4.0 to v4.1) every time you modify your code!
+const CACHE_NAME = 'gpa-calc-v3.7'; // IMPORTANT: Change this version tag (e.g., v4.0 to v4.1) every time you modify your code!
 
 const ASSETS = [
   './',
@@ -6,8 +6,8 @@ const ASSETS = [
   'manifest.json',
   'html2canvas.min.js',
   'icon.png',
-  'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-  'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap'
+  'icon-192.png',
+  'icon-512.png'
 ];
 
 // 1. Install Event: Save core files into cache instantly
