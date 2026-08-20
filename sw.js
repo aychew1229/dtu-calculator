@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gpa-calc-v3.7'; // IMPORTANT: Change this version tag (e.g., v4.0 to v4.1) every time you modify your code!
+const CACHE_NAME = 'gpa-calc-v3.8';
 
 const ASSETS = [
   './',
