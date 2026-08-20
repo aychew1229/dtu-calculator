@@ -620,7 +620,7 @@
           </div>
           <div class="field-wrap">
             <label class="field-label">Student ID</label>
-            <input type="text" id="studentID" placeholder="e.g. DTU/001/18" />
+            <input type="text" id="studentID" placeholder="e.g. DTU/001/18" oninput="validateString(this)" />
           </div>
           <div class="field-wrap">
             <label class="field-label">Department / Major</label>
@@ -685,7 +685,7 @@
         <p class="table-msg" id="courseTableMsg">Add at least one course with credit hours before calculating.</p>
         <div class="actions-row">
           <button class="btn btn-add" onclick="addRow()">＋ Add Course</button>
-          <button class="btn btn-calc" onclick="calculateGPA()">Calculate &amp; Generate Transcript</button>
+          <button class="btn btn-calc" onclick="calculateGPA()">Calculate</button>
         </div>
       </div>
 
@@ -766,7 +766,7 @@
           <tbody id="resBody"></tbody>
         </table>
 
-        <!-- Semester-only summary (original style, hidden when CGPA active) -->
+        <!-- Semester-only summary-->
         <div class="summary-box" id="semSummaryBox">
           <div class="row">
             <span>Total Credit Hours</span><span id="totalCr">0</span>
@@ -833,18 +833,16 @@
       </button>
 
     </div>
-    <!-- end result-card -->
 
     <script>
       /* ── Validation ── */
       function validateString(input) {
-        // Allow letters, numbers, spaces, and common name/course punctuation
-        // (e.g. "Calculus 101", "DTU2", "O'Brien", "Math & Stats")
         input.value = input.value.replace(/[^a-zA-Z0-9\s.'&\-\/]/g, "");
         if (input.value.trim()) input.classList.remove("error-border");
       }
       function validateInteger(input) {
         input.value = input.value.replace(/[^0-9]/g, "");
+        if (input.value.trim() && parseInt(input.value) > 0) input.classList.remove("error-border");
       }
 
       /* ── Toggle previous section ── */
@@ -943,9 +941,25 @@
         let semCr = 0, semGP = 0, resHtml = "", validCourses = 0;
 
         for (let i = 0; i < names.length; i++) {
+          const nameVal = names[i].value.trim();
           const cr   = parseInt(credits[i].value) || 0;
           const gVal = parseFloat(grades[i].value);
           const gp   = cr * gVal;
+
+          // Per-row validation: course name is checked first, credit hours checked next
+          if (!nameVal) {
+            names[i].classList.add("error-border", "shake");
+            setTimeout(() => names[i].classList.remove("shake"), 400);
+          } else {
+            names[i].classList.remove("error-border");
+          }
+          if (cr <= 0) {
+            credits[i].classList.add("error-border", "shake");
+            setTimeout(() => credits[i].classList.remove("shake"), 400);
+          } else {
+            credits[i].classList.remove("error-border");
+          }
+
           if (cr > 0) {
             validCourses++;
             semCr += cr;
@@ -962,10 +976,6 @@
         const tableMsg = document.getElementById("courseTableMsg");
         if (validCourses === 0) {
           tableMsg.classList.add("show");
-          document.querySelectorAll(".c-credit").forEach(el => {
-            el.classList.add("error-border", "shake");
-            setTimeout(() => el.classList.remove("shake"), 400);
-          });
           return;
         } else {
           tableMsg.classList.remove("show");
@@ -1065,9 +1075,7 @@
         btn.disabled = true;
 
         const CAPTURE_WIDTH = 780;
-
-        // Build an off-screen host so the visible page never resizes/flashes,
-        // even on slow connections where capture takes a moment.
+        
         const host = document.createElement("div");
         host.style.cssText =
           "position:fixed;top:0;left:-10000px;z-index:-1;" +
