@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GPA Calculator</title>
     <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <meta name="theme-color" content="#0f2545">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <script src="html2canvas.min.js"></script>
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap"
@@ -329,6 +333,15 @@
         text-align: center;
       }
       .btn-remove:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+      .table-msg {
+        display: none;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--red);
+        margin-top: 10px;
+      }
+      .table-msg.show { display: block; }
 
       /* ── Action Buttons ── */
       .actions-row { display: flex; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
@@ -669,6 +682,7 @@
             </tbody>
           </table>
         </div>
+        <p class="table-msg" id="courseTableMsg">Add at least one course with credit hours before calculating.</p>
         <div class="actions-row">
           <button class="btn btn-add" onclick="addRow()">＋ Add Course</button>
           <button class="btn btn-calc" onclick="calculateGPA()">Calculate &amp; Generate Transcript</button>
@@ -824,13 +838,14 @@
     <script>
       /* ── Validation ── */
       function validateString(input) {
-        input.value = input.value.replace(/[^a-zA-Z\s]/g, "");
+        // Allow letters, numbers, spaces, and common name/course punctuation
+        // (e.g. "Calculus 101", "DTU2", "O'Brien", "Math & Stats")
+        input.value = input.value.replace(/[^a-zA-Z0-9\s.'&\-\/]/g, "");
         if (input.value.trim()) input.classList.remove("error-border");
       }
       function validateInteger(input) {
         input.value = input.value.replace(/[^0-9]/g, "");
       }
-      document.addEventListener("contextmenu", e => e.preventDefault());
 
       /* ── Toggle previous section ── */
       function togglePrevSection() {
@@ -925,13 +940,14 @@
         const names   = document.querySelectorAll(".c-name");
         const credits = document.querySelectorAll(".c-credit");
         const grades  = document.querySelectorAll(".c-grade");
-        let semCr = 0, semGP = 0, resHtml = "";
+        let semCr = 0, semGP = 0, resHtml = "", validCourses = 0;
 
         for (let i = 0; i < names.length; i++) {
           const cr   = parseInt(credits[i].value) || 0;
           const gVal = parseFloat(grades[i].value);
           const gp   = cr * gVal;
           if (cr > 0) {
+            validCourses++;
             semCr += cr;
             semGP += gp;
             resHtml += `<tr>
@@ -940,6 +956,19 @@
               <td style="text-align:center">${gp.toFixed(2)}</td>
             </tr>`;
           }
+        }
+
+        // Require at least one course with credit hours before calculating
+        const tableMsg = document.getElementById("courseTableMsg");
+        if (validCourses === 0) {
+          tableMsg.classList.add("show");
+          document.querySelectorAll(".c-credit").forEach(el => {
+            el.classList.add("error-border", "shake");
+            setTimeout(() => el.classList.remove("shake"), 400);
+          });
+          return;
+        } else {
+          tableMsg.classList.remove("show");
         }
 
         const semGPA = semCr > 0 ? semGP / semCr : 0;
@@ -1022,6 +1051,11 @@
       }
 
       /* ── Download ── */
+      function stripIds(el) {
+        el.removeAttribute("id");
+        el.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
+      }
+
       function downloadTranscript() {
         const paper = document.getElementById("transcriptPaper");
         const btn   = document.getElementById("downloadBtn");
@@ -1030,28 +1064,26 @@
         btn.textContent = "Preparing image…";
         btn.disabled = true;
 
-        // Save original styles
-        const origStyle      = paper.style.cssText;
-        const origParent     = paper.parentElement;
-        const origWidth      = paper.style.width;
-        const origMinWidth   = paper.style.minWidth;
-        const origBorderRadius = paper.style.borderRadius;
-        const origBoxShadow  = paper.style.boxShadow;
-        const origAnimation  = paper.style.animation;
-
-        // Force a clean fixed-width render so nothing wraps or clips
         const CAPTURE_WIDTH = 780;
-        paper.style.width        = CAPTURE_WIDTH + "px";
-        paper.style.minWidth     = CAPTURE_WIDTH + "px";
-        paper.style.borderRadius = "0";
-        paper.style.boxShadow    = "none";
-        paper.style.animation    = "none";
-        paper.style.opacity      = "1";
-        paper.style.transform    = "none";
 
-        // Fix accent bar margin to match forced padding
-        const bar = paper.querySelector(".transcript-accent-bar");
-        const origBarStyle = bar ? bar.style.cssText : "";
+        // Build an off-screen host so the visible page never resizes/flashes,
+        // even on slow connections where capture takes a moment.
+        const host = document.createElement("div");
+        host.style.cssText =
+          "position:fixed;top:0;left:-10000px;z-index:-1;" +
+          "pointer-events:none;opacity:0;";
+
+        const clone = paper.cloneNode(true);
+        stripIds(clone); // avoid duplicate DOM ids while the clone exists
+        clone.style.width        = CAPTURE_WIDTH + "px";
+        clone.style.minWidth     = CAPTURE_WIDTH + "px";
+        clone.style.borderRadius = "0";
+        clone.style.boxShadow    = "none";
+        clone.style.animation    = "none";
+        clone.style.opacity      = "1";
+        clone.style.transform    = "none";
+
+        const bar = clone.querySelector(".transcript-accent-bar");
         if (bar) {
           bar.style.cssText =
             "height:5px;" +
@@ -1060,25 +1092,27 @@
             "display:block;border-radius:0;";
         }
 
-        // Wait for reflow then capture
+        host.appendChild(clone);
+        document.body.appendChild(host);
+
+        const cleanup = () => host.remove();
+
+        // Wait for reflow/fonts on the clone, then capture
         requestAnimationFrame(() => {
           setTimeout(() => {
-            html2canvas(paper, {
+            html2canvas(clone, {
               scale: 2,
               backgroundColor: "#ffffff",
               useCORS: true,
               allowTaint: true,
               foreignObjectRendering: false,
               logging: false,
-              width:  paper.offsetWidth,
-              height: paper.scrollHeight,
+              width:  clone.offsetWidth,
+              height: clone.scrollHeight,
               windowWidth: CAPTURE_WIDTH + 80,
             })
             .then(canvas => {
-              // Restore everything
-              paper.style.cssText        = origStyle;
-              if (bar) bar.style.cssText = origBarStyle;
-
+              cleanup();
               const link = document.createElement("a");
               link.download = "Transcript_" + name + ".png";
               link.href = canvas.toDataURL("image/png");
@@ -1087,8 +1121,7 @@
               btn.disabled = false;
             })
             .catch(err => {
-              paper.style.cssText        = origStyle;
-              if (bar) bar.style.cssText = origBarStyle;
+              cleanup();
               console.error(err);
               btn.textContent = "↓ Download Transcript as PNG";
               btn.disabled = false;
